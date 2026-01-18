@@ -137,14 +137,17 @@ export default function HomePage() {
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId);
         if (element) {
-            const navbarHeight = 80; // Height of sticky navbar
-            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const navbarHeight = 80;
+            const elementPosition = element.getBoundingClientRect().top + window.scrollY;
             const offsetPosition = elementPosition - navbarHeight;
 
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
             });
+
+            // Update active section immediately for better UX
+            setActiveSection(sectionId);
         }
     };
 
@@ -164,68 +167,47 @@ export default function HomePage() {
             </div>
 
             {/* Navigation */}
-            <nav className={`relative z-10 border-b sticky top-0 transition-all duration-300 ${isScrolled
+            <nav className={`relative z-50 border-b sticky top-0 transition-all duration-300 ${isScrolled
                 ? 'border-gray-300 bg-white backdrop-blur-xl shadow-lg'
                 : 'border-gray-200 bg-white/95 backdrop-blur-lg shadow-sm'
                 }`}>
-                <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-                    {/* Logo */}
-                    <Logo className="w-8 h-8" showText={true} />
+                <div className="container mx-auto px-6 h-20 grid grid-cols-3 items-center">
+                    {/* Logo - Left */}
+                    <div className="flex items-center">
+                        <Logo className="w-8 h-8" showText={true} />
+                    </div>
 
                     {/* Center Nav Links */}
-                    <div className="hidden md:flex items-center gap-8 text-sm font-medium absolute left-1/2 transform -translate-x-1/2">
-                        <button
-                            type="button"
-                            onClick={() => scrollToSection('features')}
-                            className={`transition-colors relative group cursor-pointer ${activeSection === 'features'
-                                ? 'text-indigo-600 font-semibold'
-                                : 'text-gray-800 hover:text-indigo-600'
-                                }`}
-                        >
-                            Features
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'features' ? 'w-full' : 'w-0 group-hover:w-full'
-                                }`}></span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scrollToSection('how-it-works')}
-                            className={`transition-colors relative group cursor-pointer ${activeSection === 'how-it-works'
-                                ? 'text-indigo-600 font-semibold'
-                                : 'text-gray-800 hover:text-indigo-600'
-                                }`}
-                        >
-                            How It Works
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'how-it-works' ? 'w-full' : 'w-0 group-hover:w-full'
-                                }`}></span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scrollToSection('pricing')}
-                            className={`transition-colors relative group cursor-pointer ${activeSection === 'pricing'
-                                ? 'text-indigo-600 font-semibold'
-                                : 'text-gray-800 hover:text-indigo-600'
-                                }`}
-                        >
-                            Pricing
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'pricing' ? 'w-full' : 'w-0 group-hover:w-full'
-                                }`}></span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scrollToSection('faq')}
-                            className={`transition-colors relative group cursor-pointer ${activeSection === 'faq'
-                                ? 'text-indigo-600 font-semibold'
-                                : 'text-gray-800 hover:text-indigo-600'
-                                }`}
-                        >
-                            FAQ
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'faq' ? 'w-full' : 'w-0 group-hover:w-full'
-                                }`}></span>
-                        </button>
+                    <div className="hidden md:flex items-center justify-center gap-8 text-sm font-medium">
+                        {[
+                            { id: 'features', label: 'Features' },
+                            { id: 'how-it-works', label: 'How It Works' },
+                            { id: 'pricing', label: 'Pricing' },
+                            { id: 'faq', label: 'FAQ' },
+                        ].map((item) => (
+                            <a
+                                key={item.id}
+                                href={`#${item.id}`}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    scrollToSection(item.id);
+                                }}
+                                className={`transition-colors relative group cursor-pointer py-2 px-1 ${activeSection === item.id
+                                    ? 'text-indigo-600 font-semibold'
+                                    : 'text-gray-800 hover:text-indigo-600'
+                                    }`}
+                            >
+                                {item.label}
+                                <span
+                                    className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
+                                        }`}
+                                />
+                            </a>
+                        ))}
                     </div>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-end gap-3">
                         <Link
                             href="/login"
                             className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"

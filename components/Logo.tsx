@@ -29,7 +29,7 @@ export const Logo: React.FC<LogoProps> = ({
     const textColor = variant === 'dark' ? 'text-white' : 'text-slate-900';
 
     return (
-        <div className={`flex items-center gap-1 ${variant === 'dark' ? 'text-white' : 'text-indigo-600'}`}>
+        <div className={`flex items-center ${variant === 'dark' ? 'text-white' : 'text-indigo-600'}`}>
             <svg
                 viewBox="0 0 40 40"
                 fill="none"
