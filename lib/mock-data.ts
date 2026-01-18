@@ -184,3 +184,50 @@ export const DEMO_INVITATIONS = [
         companyId: 'demo-company-id'
     }
 ];
+
+export const DEMO_RECURRING_INVOICES = [
+    {
+        id: 'rec-1',
+        name: 'Monthly Retainer - Acme Corp',
+        clientId: '1',
+        companyId: 'demo-company-id',
+        client: { id: '1', name: 'Acme Corporation', email: 'billing@acme.com' },
+        items: [
+            { description: 'Monthly Consultation Services', quantity: 1, price: 5000.00 }
+        ],
+        taxRate: 10,
+        discount: 0,
+        frequency: 'MONTHLY',
+        startDate: '2024-01-01',
+        endDate: undefined,
+        lastGenerated: '2024-02-01',
+        nextGenerationDate: '2024-03-01',
+        isActive: true,
+        notes: 'Monthly retainer for ongoing consulting services',
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-02-01T00:00:00Z',
+    },
+    {
+        id: 'rec-2',
+        name: 'Quarterly Maintenance - TechStart',
+        clientId: '2',
+        companyId: 'demo-company-id',
+        client: { id: '2', name: 'TechStart Inc.', email: 'accounts@techstart.io' },
+        items: [
+            { description: 'Quarterly System Maintenance', quantity: 1, price: 2500.00 },
+            { description: 'Security Updates Package', quantity: 1, price: 500.00 }
+        ],
+        taxRate: 8,
+        discount: 100,
+        frequency: 'QUARTERLY',
+        startDate: '2024-01-15',
+        endDate: '2024-12-31',
+        lastGenerated: '2024-01-15',
+        nextGenerationDate: '2024-04-15',
+        isActive: true,
+        notes: 'Quarterly maintenance contract',
+        createdAt: '2024-01-15T00:00:00Z',
+        updatedAt: '2024-01-15T00:00:00Z',
+    },
+];
+

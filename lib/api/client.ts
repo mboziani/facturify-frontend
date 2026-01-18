@@ -11,7 +11,8 @@ import {
     DEMO_RECENT_ACTIVITY,
     DEMO_INCOME_STATEMENT,
     DEMO_AGING_REPORT,
-    DEMO_INVITATIONS
+    DEMO_INVITATIONS,
+    DEMO_RECURRING_INVOICES
 } from '../mock-data';
 
 // Helper to check if demo mode is active
@@ -186,6 +187,28 @@ const mockAdapter: AxiosAdapter = async (config) => {
     if (url?.includes('/team-invitations')) {
         if (method === 'get') return success(DEMO_INVITATIONS);
         return success({ success: true });
+    }
+
+    // Recurring Invoices
+    if (url?.includes('/recurring-invoices')) {
+        if (url?.includes('/generate')) {
+            return success(DEMO_INVOICES[0]); // Return a generated invoice
+        }
+        if (method === 'get') {
+            const idMatch = url.match(/\/recurring-invoices\/([\w-]+)/);
+            if (idMatch && idMatch[1] && !url.endsWith('/recurring-invoices')) {
+                const template = DEMO_RECURRING_INVOICES.find(r => r.id === idMatch[1]);
+                return template ? success(template) : Promise.reject({ response: { status: 404 } });
+            }
+            return success(DEMO_RECURRING_INVOICES);
+        }
+        if (method === 'post') {
+            return success(DEMO_RECURRING_INVOICES[0]);
+        }
+        if (method === 'delete') {
+            return success({ success: true });
+        }
+        return success(DEMO_RECURRING_INVOICES[0]);
     }
 
     // Fallback for unmocked routes in demo mode (return empty or generic success to prevent errors)
