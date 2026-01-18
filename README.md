@@ -103,15 +103,15 @@ facturify-frontend/
 
 ## Features
 
-- 🔐 Authentication (Login, Register, Forgot Password)
-- 📊 Dashboard with analytics
-- 🧾 Invoice management
-- 👥 Client management
-- 💰 Expense tracking
-- ⏱️ Time tracking
-- 📈 Financial reports
-- 👥 Team management
-- ⚙️ Settings
+- Authentication (Login, Register, Forgot Password)
+- Dashboard with analytics
+- Invoice management
+- Client management
+- Expense tracking
+- Time tracking
+- Financial reports
+- Team management
+- Settings
 
 ## Deployment
 
