@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isProduction = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
@@ -12,10 +14,12 @@ const nextConfig = {
             },
         ],
     },
-    basePath: '/facturify-frontend',
-    assetPrefix: '/facturify-frontend/',
-    // Rewrites are not supported in static export
-    // async rewrites() { ... }
+    // basePath only for GitHub Pages production deployment
+    ...(isProduction && {
+        basePath: '/facturify-frontend',
+        assetPrefix: '/facturify-frontend/',
+    }),
 };
 
 module.exports = nextConfig;
+
