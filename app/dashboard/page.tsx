@@ -7,6 +7,7 @@ import { useCompany } from '@/contexts/CompanyContext';
 import { analyticsApi, type DashboardStats, type RevenueData } from '@/lib/api/analyticsApi';
 import { formatCurrency, formatDate } from '@/lib/utils/invoiceUtils';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import toast from 'react-hot-toast';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -16,6 +17,18 @@ export default function DashboardPage() {
     const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
     const [recentActivity, setRecentActivity] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Show welcome message if just logged in
+    useEffect(() => {
+        const justLoggedIn = localStorage.getItem('justLoggedIn');
+        if (justLoggedIn === 'true') {
+            localStorage.removeItem('justLoggedIn');
+            toast.success(`Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`, {
+                duration: 3000,
+                icon: '👋',
+            });
+        }
+    }, [user?.firstName]);
 
     useEffect(() => {
         if (currentCompany?.id) {

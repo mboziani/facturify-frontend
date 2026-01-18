@@ -37,7 +37,8 @@ export default function LoginPage() {
             setError('');
             setIsLoading(true);
             await login(data);
-            toast.success('Successfully logged in!');
+            // Set flag for dashboard to show welcome message
+            localStorage.setItem('justLoggedIn', 'true');
             router.push('/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid email or password');
