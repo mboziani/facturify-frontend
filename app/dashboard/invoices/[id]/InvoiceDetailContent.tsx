@@ -44,7 +44,7 @@ export default function InvoiceDetailContent() {
     const handleSendInvoice = async () => {
         if (!invoice) return;
         try {
-            await invoiceApi.sendInvoice(invoiceId);
+            await invoiceApi.markAsSent(invoiceId);
             toast.success('Invoice sent!');
             loadInvoice();
         } catch (err: any) {
