@@ -25,8 +25,10 @@ export const Logo: React.FC<LogoProps> = ({
         </defs>
     );
 
-    const fillColor = variant === 'color' ? 'url(#logo-gradient)' : 'currentColor';
+    // Use gradient for both color and dark variants, white only for light
+    const fillColor = variant === 'light' ? 'currentColor' : (variant === 'dark' ? 'url(#logo-gradient-dark)' : 'url(#logo-gradient)');
     const textColor = variant === 'dark' ? 'text-white' : 'text-slate-900';
+    const bgOpacity = variant === 'dark' ? '0.2' : '0.1';
 
     return (
         <div className={`flex items-center ${variant === 'dark' ? 'text-white' : 'text-indigo-600'}`}>
@@ -43,7 +45,7 @@ export const Logo: React.FC<LogoProps> = ({
                 <path
                     d="M10 30C10 31.1046 10.8954 32 12 32H28C29.1046 32 30 31.1046 30 30V10C30 8.89543 29.1046 8 28 8H12C10.8954 8 10 8.89543 10 10V30Z"
                     fill={fillColor}
-                    fillOpacity="0.1"
+                    fillOpacity={bgOpacity}
                 />
 
                 {/* Main Dynamic Element */}
@@ -73,3 +75,4 @@ export const Logo: React.FC<LogoProps> = ({
         </div>
     );
 };
+
