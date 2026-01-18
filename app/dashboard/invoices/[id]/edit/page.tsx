@@ -12,6 +12,14 @@ import { clientApi } from '@/lib/api/clientApi';
 import { Invoice, InvoiceStatus } from '@/types/invoice';
 import type { Client } from '@/types/client';
 
+// Required for static export
+export function generateStaticParams() {
+    return [
+        { id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }, { id: '5' },
+        { id: '6' }, { id: '7' }, { id: '8' }, { id: '9' }, { id: '10' },
+    ];
+}
+
 const invoiceItemSchema = z.object({
     description: z.string().min(1, 'Description is required'),
     quantity: z.number().min(0.01, 'Quantity must be positive'),

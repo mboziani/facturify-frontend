@@ -5,6 +5,11 @@ import { useRouter, useParams } from 'next/navigation';
 import { teamInvitationsApi } from '@/lib/api/teamInvitationsApi';
 import toast from 'react-hot-toast';
 
+// Required for static export - demo token
+export function generateStaticParams() {
+    return [{ token: 'demo-token' }];
+}
+
 export default function AcceptInvitationPage() {
     const router = useRouter();
     const params = useParams();

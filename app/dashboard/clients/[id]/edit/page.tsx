@@ -9,6 +9,11 @@ import { z } from 'zod';
 import { clientApi } from '@/lib/api/clientApi';
 import type { Client } from '@/types/client';
 
+// Required for static export
+export function generateStaticParams() {
+    return [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }, { id: '5' }];
+}
+
 const clientSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email').optional().or(z.literal('')),

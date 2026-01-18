@@ -6,6 +6,17 @@ import Link from 'next/link';
 import { clientApi } from '@/lib/api/clientApi';
 import type { Client } from '@/types/client';
 
+// Required for static export - pre-render pages for demo client IDs
+export function generateStaticParams() {
+    return [
+        { id: '1' },
+        { id: '2' },
+        { id: '3' },
+        { id: '4' },
+        { id: '5' },
+    ];
+}
+
 export default function ClientDetailPage() {
     const router = useRouter();
     const params = useParams();
@@ -229,8 +240,8 @@ export default function ClientDetailPage() {
                                 <dt className="text-slate-500">Status</dt>
                                 <dd>
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.isActive
-                                            ? 'bg-emerald-100 text-emerald-800'
-                                            : 'bg-slate-100 text-slate-800'
+                                        ? 'bg-emerald-100 text-emerald-800'
+                                        : 'bg-slate-100 text-slate-800'
                                         }`}>
                                         {client.isActive ? 'Active' : 'Inactive'}
                                     </span>
