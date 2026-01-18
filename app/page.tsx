@@ -177,49 +177,49 @@ export default function HomePage() {
                         <button
                             type="button"
                             onClick={() => scrollToSection('features')}
-                            className={`transition-colors relative group ${activeSection === 'features'
+                            className={`transition-colors relative group cursor-pointer ${activeSection === 'features'
                                 ? 'text-indigo-600 font-semibold'
                                 : 'text-gray-800 hover:text-indigo-600'
                                 }`}
                         >
                             Features
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 ${activeSection === 'features' ? 'w-full' : 'w-0 group-hover:w-full'
+                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'features' ? 'w-full' : 'w-0 group-hover:w-full'
                                 }`}></span>
                         </button>
                         <button
                             type="button"
                             onClick={() => scrollToSection('how-it-works')}
-                            className={`transition-colors relative group ${activeSection === 'how-it-works'
+                            className={`transition-colors relative group cursor-pointer ${activeSection === 'how-it-works'
                                 ? 'text-indigo-600 font-semibold'
                                 : 'text-gray-800 hover:text-indigo-600'
                                 }`}
                         >
                             How It Works
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 ${activeSection === 'how-it-works' ? 'w-full' : 'w-0 group-hover:w-full'
+                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'how-it-works' ? 'w-full' : 'w-0 group-hover:w-full'
                                 }`}></span>
                         </button>
                         <button
                             type="button"
                             onClick={() => scrollToSection('pricing')}
-                            className={`transition-colors relative group ${activeSection === 'pricing'
+                            className={`transition-colors relative group cursor-pointer ${activeSection === 'pricing'
                                 ? 'text-indigo-600 font-semibold'
                                 : 'text-gray-800 hover:text-indigo-600'
                                 }`}
                         >
                             Pricing
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 ${activeSection === 'pricing' ? 'w-full' : 'w-0 group-hover:w-full'
+                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'pricing' ? 'w-full' : 'w-0 group-hover:w-full'
                                 }`}></span>
                         </button>
                         <button
                             type="button"
                             onClick={() => scrollToSection('faq')}
-                            className={`transition-colors relative group ${activeSection === 'faq'
+                            className={`transition-colors relative group cursor-pointer ${activeSection === 'faq'
                                 ? 'text-indigo-600 font-semibold'
                                 : 'text-gray-800 hover:text-indigo-600'
                                 }`}
                         >
                             FAQ
-                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 ${activeSection === 'faq' ? 'w-full' : 'w-0 group-hover:w-full'
+                            <span className={`absolute bottom-0 left-0 h-0.5 bg-indigo-600 transition-all duration-300 pointer-events-none ${activeSection === 'faq' ? 'w-full' : 'w-0 group-hover:w-full'
                                 }`}></span>
                         </button>
                     </div>
