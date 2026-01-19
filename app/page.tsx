@@ -431,8 +431,8 @@ export default function HomePage() {
                     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         {[
                             { name: 'Starter', price: '$0', period: '/month', desc: 'Perfect for freelancers just getting started.', features: ['10 invoices/month', '5 clients', 'Basic reports', 'Email support'], cta: 'Start Free', highlight: false },
-                            { name: 'Professional', price: '$29', period: '/month', desc: 'For growing businesses with recurring clients.', features: ['100 invoices/month', '50 clients', 'Recurring billing', 'Expense tracking', 'Priority support'], cta: 'Start Trial', highlight: true },
-                            { name: 'Business', price: '$99', period: '/month', desc: 'Unlimited power for scaling teams.', features: ['Unlimited invoices', 'Unlimited clients', 'Team collaboration', 'API access', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
+                            { name: 'Professional', price: '$19', period: '/month', desc: 'For growing businesses with recurring clients.', features: ['Unlimited invoices', 'Unlimited clients', 'Recurring billing', 'Expense tracking', 'Priority support'], cta: 'Start Trial', highlight: true },
+                            { name: 'Business', price: '$49', period: '/month', desc: 'Full power for scaling teams.', features: ['Everything in Pro', '5 team members', 'Team collaboration', 'API access', 'Dedicated support'], cta: 'Start Trial', highlight: false },
                         ].map((plan, i) => (
                             <div key={i} className={`relative rounded-2xl p-8 ${plan.highlight ? 'bg-indigo-600 text-white ring-4 ring-indigo-600 ring-offset-4 scale-105' : 'bg-white border border-gray-200'}`}>
                                 {plan.highlight && <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-xs font-bold">Most Popular</div>}

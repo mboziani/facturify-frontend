@@ -14,7 +14,8 @@ const PLANS = [
             '10 Invoices / month',
             '5 Clients',
             '1 Active User',
-            'Basic Reports'
+            'Basic Reports',
+            'Email Support'
         ],
         button: 'Current Plan',
         current: true,
@@ -22,16 +23,17 @@ const PLANS = [
     {
         id: 'PRO',
         name: 'Professional',
-        price: '$29',
+        price: '$19',
         period: '/month',
         description: 'For growing businesses that need automation.',
         features: [
-            '100 Invoices / month',
-            '50 Clients',
-            '5 Active Users',
+            'Unlimited Invoices',
+            'Unlimited Clients',
+            '1 Active User',
             'Recurring Invoices',
             'Expense Tracking',
-            'Email Automation'
+            'Advanced Reports',
+            'Priority Support'
         ],
         button: 'Upgrade to Pro',
         highlight: true,
@@ -40,18 +42,18 @@ const PLANS = [
     {
         id: 'ENTERPRISE',
         name: 'Business',
-        price: '$99',
+        price: '$49',
         period: '/month',
-        description: 'Unlimited power for scaling teams.',
+        description: 'Full power for scaling teams.',
         features: [
-            'Unlimited Invoices',
-            'Unlimited Clients',
-            'Unlimited Users',
-            'Priority Support',
+            'Everything in Pro',
+            '5 Team Members',
+            'Team Collaboration',
             'Custom Branding',
-            'API Access'
+            'API Access',
+            'Dedicated Support'
         ],
-        button: 'Contact Sales',
+        button: 'Start Trial',
         current: false,
     },
 ];
@@ -92,8 +94,8 @@ export default function SubscriptionPage() {
                     <div
                         key={plan.id}
                         className={`relative rounded-2xl p-8 bg-white ${plan.highlight
-                                ? 'ring-2 ring-indigo-600 shadow-xl scale-105 z-10'
-                                : 'border border-slate-200 shadow-sm hover:shadow-md transition-shadow'
+                            ? 'ring-2 ring-indigo-600 shadow-xl scale-105 z-10'
+                            : 'border border-slate-200 shadow-sm hover:shadow-md transition-shadow'
                             }`}
                     >
                         {plan.highlight && (
@@ -126,10 +128,10 @@ export default function SubscriptionPage() {
                         <button
                             disabled={plan.current}
                             className={`w-full py-3 px-4 rounded-xl text-sm font-semibold transition-colors ${plan.current
-                                    ? 'bg-slate-100 text-slate-400 cursor-default'
-                                    : plan.highlight
-                                        ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
-                                        : 'bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50'
+                                ? 'bg-slate-100 text-slate-400 cursor-default'
+                                : plan.highlight
+                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
+                                    : 'bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50'
                                 }`}
                         >
                             {plan.button}
