@@ -29,35 +29,20 @@ This directory contains comprehensive documentation for the Facturify Platform, 
 **Purpose:** Complete technology inventory with justification for each choice.  
 **Audience:** Technical Teams, DevOps Engineers
 
-### 4. FEATURE SPECIFICATIONS
-**File:** `04-FEATURE-SPECIFICATIONS.md`  
-**Purpose:** Detailed functional specifications for all platform features.  
-**Audience:** Product Managers, Business Analysts, Clients
-
-### 5. PROJECT LIFECYCLE & ROADMAP
-**File:** `05-PROJECT-LIFECYCLE.md`  
+### 4. PROJECT LIFECYCLE & ROADMAP
+**File:** `04-PROJECT-LIFECYCLE.md`  
 **Purpose:** Development phases, milestones, and future roadmap.  
 **Audience:** Project Managers, Stakeholders, Investors
 
-### 6. SECURITY & COMPLIANCE
-**File:** `06-SECURITY-COMPLIANCE.md`  
-**Purpose:** Security measures, compliance standards, and data protection policies.  
-**Audience:** Security Officers, Compliance Teams, Enterprise Clients
+### 5. AUTOMATION STRATEGY
+**File:** `05-AUTOMATION-STRATEGY.md`  
+**Purpose:** Detailed n8n workflow automation strategy, use cases, and integration plan.  
+**Audience:** Developers, DevOps, Business Analysts
 
-### 7. DEPLOYMENT & OPERATIONS
-**File:** `07-DEPLOYMENT-OPERATIONS.md`  
-**Purpose:** Deployment strategies, operational procedures, and monitoring.  
-**Audience:** DevOps Teams, Operations Managers
-
-### 8. API DOCUMENTATION
-**File:** `08-API-DOCUMENTATION.md`  
-**Purpose:** Complete API reference for integration partners.  
-**Audience:** Integration Partners, Third-party Developers
-
-### 9. MOBILE APP STRATEGY
-**File:** `09-MOBILE-APP-STRATEGY.md`
-**Purpose:** Comprehensive plan for the React Native mobile application implementation, architecture, and roadmap.
-**Audience:** Technical Teams, Product Managers, Mobile Developers
+### 6. MOBILE APP STRATEGY
+**File:** `06-MOBILE-APP-STRATEGY.md`  
+**Purpose:** Comprehensive plan for the React Native mobile application implementation.  
+**Audience:** Technical Teams, Mobile Developers
 
 ---
 
@@ -65,21 +50,21 @@ This directory contains comprehensive documentation for the Facturify Platform, 
 
 **For Business Stakeholders:**
 - Start with: Product Overview (01)
-- Then review: Feature Specifications (04)
-- Finally: Project Lifecycle (05)
+- Then review: Project Lifecycle (04)
+- Finally: Automation Strategy (05)
 
 **For Technical Teams:**
 - Start with: Technical Architecture (02)
-- Then review: Technology Stack (03) and Mobile Strategy (09)
-- Finally: Deployment & Operations (07)
+- Then review: Technology Stack (03) and Mobile Strategy (06)
+- Finally: Automation Strategy (05)
 
 **For Security/Compliance:**
-- Review: Security & Compliance (06)
-- Reference: Technical Architecture (02)
+- Review: Technical Architecture (02)
+- Reference: Automation Strategy (05) (Security Section)
 
 **For Integration Partners:**
-- Start with: API Documentation (08)
-- Reference: Technology Stack (03)
+- Start with: Technology Stack (03)
+- Reference: Technical Architecture (02)
 
 ---
 
