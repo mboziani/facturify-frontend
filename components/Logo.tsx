@@ -68,7 +68,7 @@ export const Logo: React.FC<LogoProps> = ({
             </svg>
 
             {showText && (
-                <span className={`font-bold tracking-tight text-xl ${textColor}`}>
+                <span className={`font-bold tracking-tight text-xl ${textColor} -ml-1.5 pt-0.5`}>
                     Facturify
                 </span>
             )}

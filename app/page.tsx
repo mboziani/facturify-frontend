@@ -184,7 +184,7 @@ export default function HomePage() {
                 }`}>
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Logo - Left */}
-                    <div className="flex-shrink-0 z-50 relative">
+                    <div className="flex-shrink-0 z-50 relative flex items-center">
                         <Logo className="w-8 h-8" showText={true} />
                     </div>
 
@@ -248,7 +248,7 @@ export default function HomePage() {
                 <div className={`fixed inset-0 bg-white z-40 md:hidden transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
                     }`} style={{ top: '0', paddingTop: '80px' }}>
                     <div className="flex flex-col h-full px-6 overflow-y-auto pb-8">
-                        <div className="space-y-6 mt-4">
+                        <div className="space-y-2 mt-4">
                             {navItems.map((item) => (
                                 <a
                                     key={item.id}
@@ -257,9 +257,9 @@ export default function HomePage() {
                                         e.preventDefault();
                                         scrollToSection(item.id);
                                     }}
-                                    className={`block text-lg font-medium py-2 border-b border-gray-100 ${activeSection === item.id
-                                        ? 'text-indigo-600'
-                                        : 'text-gray-900'
+                                    className={`block text-lg font-medium py-3 px-4 rounded-xl transition-colors ${activeSection === item.id
+                                        ? 'bg-indigo-50 text-indigo-600'
+                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                         }`}
                                 >
                                     {item.label}
@@ -267,7 +267,7 @@ export default function HomePage() {
                             ))}
                         </div>
 
-                        <div className="mt-8 space-y-4">
+                        <div className="mt-8 space-y-4 border-t border-gray-100 pt-8">
                             <Link
                                 href="/login"
                                 className="block w-full text-center py-3 text-base font-semibold text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
@@ -702,7 +702,9 @@ export default function HomePage() {
                         <div className="grid md:grid-cols-6 gap-12 mb-16">
                             {/* Brand Column */}
                             <div className="md:col-span-2">
-                                <Logo className="w-8 h-8 mb-6" showText={true} variant="dark" />
+                                <div className="mb-6">
+                                    <Logo className="w-8 h-8" showText={true} variant="dark" />
+                                </div>
                                 <p className="text-sm leading-relaxed text-gray-400 mb-8 max-w-xs">
                                     Professional invoicing and billing platform trusted by thousands of businesses worldwide.
                                 </p>
