@@ -418,14 +418,5 @@ Facturify represents the next generation of business management software, combin
 - Multiple revenue streams
 - Clear expansion path
 - Strong competitive moat
-
----
-
-**For more information:**  
-Visit: https://facturify.com  
-Email: info@facturify.com  
-Phone: +1-555-INVOICE
-
----
-
+  
 **END OF DOCUMENT**
