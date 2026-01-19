@@ -311,11 +311,11 @@ Native mobile applications:
 
 ### PROFESSIONAL TIER
 **Target:** Growing businesses  
-**Price:** $29/month  
+**Price:** $19/month (or $182/year - save 20%)  
 **Limits:**
 - Unlimited invoices
 - Unlimited clients
-- 5 users
+- 1 user
 - Advanced reporting
 
 **Features:**
@@ -326,15 +326,16 @@ Native mobile applications:
 - Priority support
 
 ### BUSINESS TIER
-**Target:** Established companies  
-**Price:** $79/month  
+**Target:** Established companies and teams  
+**Price:** $49/month (or $470/year - save 20%)  
 **Limits:**
 - Unlimited everything
-- Unlimited users
+- 5 team members
 - Multi-company support
 
 **Features:**
 - Everything in Professional
+- Team collaboration
 - AI-powered insights
 - Workflow automation
 - QuickBooks/Xero integration
@@ -418,5 +419,7 @@ Facturify represents the next generation of business management software, combin
 - Multiple revenue streams
 - Clear expansion path
 - Strong competitive moat
-  
+
+---
+
 **END OF DOCUMENT**
