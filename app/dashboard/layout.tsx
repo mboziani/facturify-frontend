@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +15,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const { user, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+
+    // Sidebar collapse state
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+    // Load saved preference from localStorage
+    useEffect(() => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        if (savedState !== null) {
+            setIsSidebarCollapsed(savedState === 'true');
+        }
+    }, []);
+
+    // Toggle sidebar and persist state
+    const toggleSidebar = () => {
+        const newState = !isSidebarCollapsed;
+        setIsSidebarCollapsed(newState);
+        localStorage.setItem('sidebarCollapsed', String(newState));
+    };
 
     const handleLogout = async () => {
         await logout();
@@ -141,30 +160,67 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                     <div className="flex">
                         {/* Sidebar Navigation */}
-                        <aside className="hidden md:block w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] sticky top-16">
-                            <nav className="p-4 space-y-1">
+                        <aside className={`hidden md:flex flex-col bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] sticky top-16 transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+                            {/* Sidebar Header with Logo */}
+                            <div className={`p-4 border-b border-gray-100 ${isSidebarCollapsed ? 'flex justify-center' : ''}`}>
+                                <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
+                                    <Logo
+                                        className={isSidebarCollapsed ? "w-10 h-10" : "w-8 h-8"}
+                                        showText={!isSidebarCollapsed}
+                                    />
+                                </Link>
+                            </div>
+
+                            {/* Navigation Links */}
+                            <nav className="flex-1 p-3 space-y-1">
                                 {navLinks.map((link) => (
                                     <Link
                                         key={link.href}
                                         href={link.href}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${isActive(link.href)
+                                        className={`flex items-center gap-3 px-3 py-3 rounded-lg font-medium transition-all group relative ${isActive(link.href)
                                             ? 'bg-indigo-50 text-indigo-600 shadow-sm'
                                             : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600'
-                                            }`}
+                                            } ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                                        title={isSidebarCollapsed ? link.name : undefined}
                                     >
-                                        {link.icon}
-                                        <span>{link.name}</span>
+                                        <span className={isSidebarCollapsed ? '' : ''}>{link.icon}</span>
+                                        {!isSidebarCollapsed && <span>{link.name}</span>}
+
+                                        {/* Tooltip for collapsed state */}
+                                        {isSidebarCollapsed && (
+                                            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
+                                                {link.name}
+                                            </div>
+                                        )}
                                     </Link>
                                 ))}
                             </nav>
 
-                            {/* Sidebar Footer */}
-                            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
-                                <div className="text-xs text-gray-500 text-center">
-                                    Facturify Platform
-                                    <br />
-                                    <span className="text-gray-400">v1.0.0</span>
-                                </div>
+                            {/* Sidebar Footer with Toggle Button */}
+                            <div className="p-3 border-t border-gray-200">
+                                <button
+                                    onClick={toggleSidebar}
+                                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-all"
+                                    title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                                >
+                                    <svg
+                                        className={`w-5 h-5 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                                    </svg>
+                                    {!isSidebarCollapsed && <span className="text-sm font-medium">Collapse</span>}
+                                </button>
+
+                                {!isSidebarCollapsed && (
+                                    <div className="mt-3 text-xs text-gray-500 text-center">
+                                        Facturify Platform
+                                        <br />
+                                        <span className="text-gray-400">v1.0.0</span>
+                                    </div>
+                                )}
                             </div>
                         </aside>
 
