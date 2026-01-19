@@ -93,7 +93,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="relative z-10 text-sm text-gray-500">
-                    © 2024 Facturify Platform. All rights reserved.
+                    © 2026 Facturify Platform. All rights reserved.
                 </div>
             </div>
 
