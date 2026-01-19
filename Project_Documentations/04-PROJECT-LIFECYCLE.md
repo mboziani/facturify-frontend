@@ -29,10 +29,8 @@
 **Team Structure:**
 - Product Owner: 1
 - Scrum Master: 1
-- Backend Developers: 2
-- Frontend Developers: 2
-- AI/ML Engineer: 1
-- DevOps Engineer: 1
+- R&D Software & Devops Engineer : 1
+- Full Stack Developers: 2
 - QA Engineer: 1
 
 **Tools:**
