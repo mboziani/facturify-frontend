@@ -1,14 +1,30 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { CompanyProvider } from '@/contexts/CompanyContext'
 import { Toaster } from 'react-hot-toast'
+
+export const viewport: Viewport = {
+    themeColor: '#4F46E5',
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+}
 
 export const metadata: Metadata = {
     title: 'Facturify - All-in-One Business Management',
     description: 'From invoice to profit — everything your small business needs, in one place.',
     keywords: ['invoicing', 'expense tracking', 'time tracking', 'business management', 'freelancer tools'],
+    manifest: '/manifest.json',
+    icons: {
+        icon: '/grid.svg',
+        apple: '/grid.svg', // Fallback to grid.svg until proper PNGs are added
+    },
 }
+
+import { InstallPrompt } from '@/components/InstallPrompt'
+
+// ... imports ...
 
 export default function RootLayout({
     children,
@@ -22,9 +38,11 @@ export default function RootLayout({
                     <CompanyProvider>
                         {children}
                         <Toaster position="top-right" />
+                        <InstallPrompt />
                     </CompanyProvider>
                 </AuthProvider>
             </body>
         </html>
     )
 }
+
