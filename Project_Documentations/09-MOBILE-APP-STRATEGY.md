@@ -47,7 +47,7 @@ Crucial for mobile users who may have spotty connections:
 
 ## 4. Feature Roadmap
 
-### Phase 1: Foundation (Current Status: 🚧 In Progress)
+### Phase 1: Foundation (Current Status: In Progress)
 *   [x] Project Initialization (Expo + TypeScript)
 *   [ ] Integration of libraries (Paper, Navigation, Query)
 *   [ ] Authentication Flow (Login/Register/Forgot Password)
