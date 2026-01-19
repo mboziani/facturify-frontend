@@ -147,14 +147,14 @@ p {
   margin-bottom: var(--spacing-md);
 }
 
-/* Links */
-a {
+/* Links - Only apply default styling to plain links without explicit color classes */
+a:not([class*="text-"]):not([class*="bg-"]):not(.btn) {
   color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
-a:hover {
+a:not([class*="text-"]):not([class*="bg-"]):not(.btn):hover {
   color: var(--color-primary-dark);
 }
 
