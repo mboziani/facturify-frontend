@@ -82,6 +82,14 @@ export default function HomePage() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [activeSection, setActiveSection] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const navItems = [
+        { id: 'features', label: 'Features' },
+        { id: 'how-it-works', label: 'How It Works' },
+        { id: 'pricing', label: 'Pricing' },
+        { id: 'faq', label: 'FAQ' },
+    ];
 
     useEffect(() => {
         // Add smooth scroll behavior to the document
@@ -148,6 +156,8 @@ export default function HomePage() {
 
             // Update active section immediately for better UX
             setActiveSection(sectionId);
+            // Close mobile menu
+            setMobileMenuOpen(false);
         }
     };
 
@@ -158,6 +168,7 @@ export default function HomePage() {
         });
     };
 
+
     return (
         <div className="min-h-screen bg-white">
             {/* Background */}
@@ -167,24 +178,19 @@ export default function HomePage() {
             </div>
 
             {/* Navigation */}
-            <nav className={`relative z-50 border-b sticky top-0 transition-all duration-300 ${isScrolled
-                ? 'border-gray-300 bg-white backdrop-blur-xl shadow-lg'
-                : 'border-gray-200 bg-white/95 backdrop-blur-lg shadow-sm'
+            <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled || mobileMenuOpen
+                ? 'bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm'
+                : 'bg-transparent border-b border-transparent'
                 }`}>
-                <div className="container mx-auto px-6 h-20 grid grid-cols-3 items-center">
+                <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Logo - Left */}
-                    <div className="flex items-center">
+                    <div className="flex-shrink-0 z-50 relative">
                         <Logo className="w-8 h-8" showText={true} />
                     </div>
 
-                    {/* Center Nav Links */}
+                    {/* Desktop Nav Links */}
                     <div className="hidden md:flex items-center justify-center gap-8 text-sm font-medium">
-                        {[
-                            { id: 'features', label: 'Features' },
-                            { id: 'how-it-works', label: 'How It Works' },
-                            { id: 'pricing', label: 'Pricing' },
-                            { id: 'faq', label: 'FAQ' },
-                        ].map((item) => (
+                        {navItems.map((item) => (
                             <a
                                 key={item.id}
                                 href={`#${item.id}`}
@@ -206,8 +212,8 @@ export default function HomePage() {
                         ))}
                     </div>
 
-                    {/* Right Actions */}
-                    <div className="flex items-center justify-end gap-3">
+                    {/* Desktop Right Actions */}
+                    <div className="hidden md:flex items-center justify-end gap-3">
                         <Link
                             href="/login"
                             className="px-4 py-2 text-sm font-semibold text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
@@ -220,6 +226,61 @@ export default function HomePage() {
                         >
                             Start Free Trial
                         </Link>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="flex md:hidden items-center z-50 relative">
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="p-2 -mr-2 text-gray-700 hover:text-indigo-600 focus:outline-none"
+                            aria-label="Toggle menu"
+                        >
+                            <div className="w-6 h-5 relative flex flex-col justify-between">
+                                <span className={`w-full h-0.5 bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2.5' : ''}`} />
+                                <span className={`w-full h-0.5 bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+                                <span className={`w-full h-0.5 bg-current rounded-full transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu Overlay */}
+                <div className={`fixed inset-0 bg-white z-40 md:hidden transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`} style={{ top: '0', paddingTop: '80px' }}>
+                    <div className="flex flex-col h-full px-6 overflow-y-auto pb-8">
+                        <div className="space-y-6 mt-4">
+                            {navItems.map((item) => (
+                                <a
+                                    key={item.id}
+                                    href={`#${item.id}`}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        scrollToSection(item.id);
+                                    }}
+                                    className={`block text-lg font-medium py-2 border-b border-gray-100 ${activeSection === item.id
+                                        ? 'text-indigo-600'
+                                        : 'text-gray-900'
+                                        }`}
+                                >
+                                    {item.label}
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 space-y-4">
+                            <Link
+                                href="/login"
+                                className="block w-full text-center py-3 text-base font-semibold text-gray-700 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                            >
+                                Log in
+                            </Link>
+                            <Link
+                                href="/register"
+                                className="block w-full text-center py-3 text-base font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+                            >
+                                Start Free Trial
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </nav>
