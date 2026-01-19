@@ -374,7 +374,7 @@ receipts.uploaded → ocr.queue
 - Payment processing automation
 - Client onboarding sequences
 - Accounting software sync (QuickBooks, Xero)
-- CRM integration (HubSpot, Salesforce)
+- CRM integration (OptimCRM, HubSpot, Salesforce etc)
 - Team notifications (Slack)
 
 **Features:**
