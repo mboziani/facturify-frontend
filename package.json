@@ -23,7 +23,8 @@
     "react-hook-form": "^7.51.0",
     "react-hot-toast": "^2.4.1",
     "recharts": "^2.10.0",
-    "zod": "^3.22.0"
+    "zod": "^3.22.0",
+    "next-pwa": "^5.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
