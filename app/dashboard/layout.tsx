@@ -111,12 +111,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
                         <div className="container mx-auto px-6 h-16">
                             <div className="flex items-center justify-between h-full">
-                                {/* Left Side: Logo & Switcher */}
-                                <div className="flex items-center gap-6">
-                                    <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
-                                        <Logo className="w-7 h-7" showText={true} />
-                                    </Link>
-                                    <div className="hidden md:block w-px h-6 bg-gray-200"></div>
+                                {/* Left Side: Sidebar Toggle & Switcher */}
+                                <div className="flex items-center gap-4">
+                                    {/* Sidebar Toggle Button (visible on desktop) */}
+                                    <button
+                                        onClick={toggleSidebar}
+                                        className="hidden md:flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-colors"
+                                        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                                    >
+                                        <svg
+                                            className={`w-5 h-5 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`}
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                        </svg>
+                                    </button>
                                     <CompanySwitcher />
                                 </div>
 
