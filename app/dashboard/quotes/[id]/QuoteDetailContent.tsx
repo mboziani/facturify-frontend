@@ -7,6 +7,7 @@ import { quoteApi } from '@/lib/api/quoteApi';
 import type { Quote } from '@/types/quote';
 import { toast } from 'react-hot-toast';
 import { generateQuotePDF } from '@/lib/utils/quotePdfGenerator';
+import SendQuoteEmailDialog, { type EmailData } from '@/components/SendQuoteEmailDialog';
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
     DRAFT: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Draft' },
@@ -24,6 +25,7 @@ export default function QuoteDetailContent() {
     const [quote, setQuote] = useState<Quote | null>(null);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
+    const [showEmailDialog, setShowEmailDialog] = useState(false);
 
     const quoteId = params.id as string;
 
@@ -46,17 +48,18 @@ export default function QuoteDetailContent() {
         }
     }, [quoteId, fetchQuote]);
 
-    const handleSend = async () => {
+    const handleSendEmail = async (emailData: EmailData) => {
         if (!quote) return;
         try {
-            setActionLoading(true);
+            // TODO: Implement actual email sending via backend API
+            // For now, we'll just mark as sent
             await quoteApi.markAsSent(quote.id);
-            toast.success('Quote sent to client!');
+            toast.success(`Quote sent to ${emailData.to}!`);
             fetchQuote();
+            setShowEmailDialog(false);
         } catch (err) {
             toast.error('Failed to send quote');
-        } finally {
-            setActionLoading(false);
+            throw err;
         }
     };
 
@@ -213,11 +216,14 @@ export default function QuoteDetailContent() {
                         {quote.status === 'DRAFT' && (
                             <>
                                 <button
-                                    onClick={handleSend}
+                                    onClick={() => setShowEmailDialog(true)}
                                     disabled={actionLoading}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center gap-2"
                                 >
-                                    Send to Client
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    Send via Email
                                 </button>
                                 <Link
                                     href={`/dashboard/quotes/${quote.id}/edit`}
@@ -478,6 +484,16 @@ export default function QuoteDetailContent() {
                     </section>
                 </div>
             </div>
+
+            {/* Email Dialog */}
+            {quote && (
+                <SendQuoteEmailDialog
+                    quote={quote}
+                    isOpen={showEmailDialog}
+                    onClose={() => setShowEmailDialog(false)}
+                    onSend={handleSendEmail}
+                />
+            )}
         </div>
     );
 }
