@@ -377,12 +377,12 @@ export default function HomePage() {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[
-                            { icon: <Icons.Invoice />, title: 'Professional Invoicing', desc: 'Create branded invoices with your logo, colors, and custom terms. Generate PDFs instantly.' },
+                            { icon: <Icons.Invoice />, title: 'Invoicing & PDF Exports', desc: 'Create branded invoices, generate professional PDFs, and send them instantly.' },
                             { icon: <Icons.Recurring />, title: 'Recurring Billing', desc: 'Set up automated recurring invoices for retainer clients. Never miss a billing cycle.' },
-                            { icon: <Icons.Users />, title: 'Client Management', desc: 'Store client details, track communication history, and manage relationships in one place.' },
+                            { icon: <Icons.Users />, title: 'Client Portal', desc: 'Give clients a dedicated secure portal to view history, approve quotes, and pay invoices.' },
                             { icon: <Icons.Wallet />, title: 'Expense Tracking', desc: 'Log expenses by category, attach receipts, and see exactly where your money goes.' },
                             { icon: <Icons.Chart />, title: 'Financial Reports', desc: 'Real-time dashboards showing revenue, outstanding invoices, and profit margins.' },
-                            { icon: <Icons.Mail />, title: 'Email Automation', desc: 'Automatic payment reminders and thank-you emails keep your cash flow healthy.' },
+                            { icon: <Icons.Shield />, title: 'Secure Payments', desc: 'Accept credit card payments directly on your invoices via Stripe integration.' },
                         ].map((feature, i) => (
                             <div key={i} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow group">
                                 <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
