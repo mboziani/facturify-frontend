@@ -12,7 +12,8 @@ import {
     DEMO_INCOME_STATEMENT,
     DEMO_AGING_REPORT,
     DEMO_INVITATIONS,
-    DEMO_RECURRING_INVOICES
+    DEMO_RECURRING_INVOICES,
+    DEMO_QUOTES
 } from '../mock-data';
 
 // Helper to check if demo mode is active
@@ -209,6 +210,48 @@ const mockAdapter: AxiosAdapter = async (config) => {
             return success({ success: true });
         }
         return success(DEMO_RECURRING_INVOICES[0]);
+    }
+
+    // Quotes
+    if (url?.includes('/quotes')) {
+        // Actions (Send, Accept, Reject, View, Convert)
+        if (url?.includes('/send') || url?.includes('/view')) {
+            return success({ ...DEMO_QUOTES[0], status: 'SENT', sentAt: new Date().toISOString() });
+        }
+        if (url?.includes('/accept')) {
+            return success({ ...DEMO_QUOTES[0], status: 'ACCEPTED', acceptedAt: new Date().toISOString() });
+        }
+        if (url?.includes('/reject')) {
+            return success({ ...DEMO_QUOTES[0], status: 'REJECTED', rejectedAt: new Date().toISOString() });
+        }
+        if (url?.includes('/convert')) {
+            return success({
+                quote: { ...DEMO_QUOTES[0], status: 'CONVERTED', convertedAt: new Date().toISOString(), convertedInvoiceId: 'inv-new-1' },
+                invoiceId: 'inv-new-1'
+            });
+        }
+        if (url?.includes('/duplicate')) {
+            return success({ ...DEMO_QUOTES[0], id: 'quote-dup-1', quoteNumber: 'QUO-0006', status: 'DRAFT' });
+        }
+
+        if (method === 'get') {
+            const idMatch = url.match(/\/quotes\/([\w-]+)/);
+            if (idMatch && idMatch[1] && !url.endsWith('/quotes')) {
+                const quote = DEMO_QUOTES.find(q => q.id === idMatch[1]);
+                return quote ? success(quote) : Promise.reject({ response: { status: 404 } });
+            }
+            return success(DEMO_QUOTES);
+        }
+        if (method === 'post') {
+            return success({ ...DEMO_QUOTES[0], id: 'quote-new-1', quoteNumber: 'QUO-0006' });
+        }
+        if (method === 'patch') {
+            return success(DEMO_QUOTES[0]);
+        }
+        if (method === 'delete') {
+            return success({ success: true });
+        }
+        return success(DEMO_QUOTES[0]);
     }
 
     // Fallback for unmocked routes in demo mode (return empty or generic success to prevent errors)
