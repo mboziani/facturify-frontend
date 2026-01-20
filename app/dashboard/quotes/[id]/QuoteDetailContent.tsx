@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { quoteApi } from '@/lib/api/quoteApi';
 import type { Quote } from '@/types/quote';
 import { toast } from 'react-hot-toast';
+import { generateQuotePDF } from '@/lib/utils/quotePdfGenerator';
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
     DRAFT: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Draft' },
@@ -131,6 +132,17 @@ export default function QuoteDetailContent() {
         }
     };
 
+    const handleDownloadPDF = () => {
+        if (!quote) return;
+        try {
+            generateQuotePDF(quote, 'Your Company Name');
+            toast.success('PDF downloaded successfully!');
+        } catch (err) {
+            console.error('PDF generation error:', err);
+            toast.error('Failed to generate PDF');
+        }
+    };
+
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -192,6 +204,12 @@ export default function QuoteDetailContent() {
 
                     {/* Actions */}
                     <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={handleDownloadPDF}
+                            className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors"
+                        >
+                            Download PDF
+                        </button>
                         {quote.status === 'DRAFT' && (
                             <>
                                 <button
