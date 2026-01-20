@@ -127,7 +127,36 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Payment links
 - Download and print
 
-### 2. CLIENT MANAGEMENT
+### 2. QUOTES & ESTIMATES
+
+**Create Professional Quotes**
+- Template-based quote creation
+- Same styling as invoices for consistency
+- Validity period management
+- Multiple revision support
+
+**Quote Lifecycle**
+- Draft → Sent → Viewed → Accepted/Rejected workflow
+- Expiration tracking
+- Client acceptance/rejection tracking
+- Activity history
+
+**Quote to Invoice Conversion**
+- One-click conversion to invoice
+- Preserve all line items and pricing
+- Automatic status update to "Converted"
+- Link reference between quote and invoice
+
+**Quote Status Tracking**
+- DRAFT: Being prepared
+- SENT: Delivered to client
+- VIEWED: Opened by client
+- ACCEPTED: Client approved
+- REJECTED: Client declined
+- EXPIRED: Past validity date
+- CONVERTED: Converted to invoice
+
+### 3. CLIENT MANAGEMENT
 
 **Client Database**
 - Comprehensive contact information
@@ -146,7 +175,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Active/inactive status
 - Risk assessment
 
-### 3. PAYMENT TRACKING
+### 4. PAYMENT TRACKING
 
 **Payment Recording**
 - Multiple payment methods
@@ -165,7 +194,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Bank statement import
 - Discrepancy detection
 
-### 4. EXPENSE MANAGEMENT
+### 5. EXPENSE MANAGEMENT
 
 **Expense Tracking**
 - Receipt capture via mobile camera
@@ -185,7 +214,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Budget vs. actual
 - Tax-ready reports
 
-### 5. RECURRING INVOICES
+### 6. RECURRING INVOICES
 
 **Subscription Billing**
 - Template-based recurring invoices
@@ -198,7 +227,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Subscription analytics
 - Churn tracking
 
-### 6. REPORTING & ANALYTICS
+### 7. REPORTING & ANALYTICS
 
 **Financial Reports**
 - Income statement (P&L)
@@ -218,7 +247,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Client risk analysis
 - Anomaly detection
 
-### 7. MULTI-COMPANY SUPPORT
+### 8. MULTI-COMPANY SUPPORT
 
 **Company Management**
 - Manage multiple business entities
@@ -232,7 +261,7 @@ To empower businesses with intelligent financial tools that save time, reduce er
 - Activity logs
 - Shared access
 
-### 8. AUTOMATION
+### 9. AUTOMATION
 
 **Workflow Automation**
 - Automated payment reminders
