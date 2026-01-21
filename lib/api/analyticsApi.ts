@@ -5,6 +5,8 @@ export interface DashboardStats {
     paidAmount: number;
     outstandingAmount: number;
     overdueAmount: number;
+    totalExpenses: number;
+    netProfit: number;
     totalInvoices: number;
     paidInvoices: number;
     unpaidInvoices: number;
@@ -20,6 +22,23 @@ export interface RevenueData {
     revenue: number;
     paid: number;
     outstanding: number;
+    expenses: number;
+}
+
+export interface TaxSummary {
+    collectedTax: number;
+    pendingTax: number;
+    expenseTax: number;
+    netTaxOwed: number;
+}
+
+export interface ProjectProfitability {
+    projectId: string;
+    projectName: string;
+    revenue: number;
+    expenses: number;
+    profit: number;
+    margin: number;
 }
 
 export interface RecentActivity {
@@ -40,6 +59,22 @@ export const analyticsApi = {
     getRevenueData: async (companyId: string, months: number = 6): Promise<RevenueData[]> => {
         const response = await apiClient.get<RevenueData[]>('/analytics/revenue', {
             params: { companyId, months },
+        });
+        return response.data;
+    },
+
+    // Get tax summary
+    getTaxSummary: async (companyId: string, year?: number): Promise<TaxSummary> => {
+        const response = await apiClient.get<TaxSummary>('/analytics/tax-summary', {
+            params: { companyId, year },
+        });
+        return response.data;
+    },
+
+    // Get project profitability
+    getProjectProfitability: async (companyId: string): Promise<ProjectProfitability[]> => {
+        const response = await apiClient.get<ProjectProfitability[]>('/analytics/projects', {
+            params: { companyId },
         });
         return response.data;
     },

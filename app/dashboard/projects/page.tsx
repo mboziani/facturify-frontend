@@ -26,7 +26,7 @@ export default function ProjectsPage() {
         setIsLoading(true);
         try {
             const data = await projectApi.getProjects(currentCompany.id);
-            setProjects(data); // Filtering done client-side for now for smoother UX with mock
+            setProjects(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to load projects', error);
         } finally {
@@ -35,7 +35,7 @@ export default function ProjectsPage() {
     };
 
     // Client-side filtering
-    const filteredProjects = projects.filter(p => {
+    const filteredProjects = (Array.isArray(projects) ? projects : []).filter(p => {
         const matchesSearch =
             p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             p.client?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

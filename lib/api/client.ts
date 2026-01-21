@@ -13,7 +13,9 @@ import {
     DEMO_AGING_REPORT,
     DEMO_INVITATIONS,
     DEMO_RECURRING_INVOICES,
-    DEMO_QUOTES
+    DEMO_QUOTES,
+    DEMO_PROJECTS,
+    DEMO_TIME_ENTRIES
 } from '../mock-data';
 
 // Helper to check if demo mode is active
@@ -78,6 +80,19 @@ const mockAdapter: AxiosAdapter = async (config) => {
     }
     if (url?.includes('/analytics/recent-activity')) {
         return success(DEMO_RECENT_ACTIVITY);
+    }
+    if (url?.includes('/analytics/tax-summary')) {
+        return success({ collectedTax: 4500, pendingTax: 1200, expenseTax: 800, netTaxOwed: 4900 });
+    }
+    if (url?.includes('/analytics/projects')) {
+        return success(DEMO_PROJECTS.map(p => ({
+            projectId: p.id,
+            projectName: p.name,
+            revenue: p.budget || 0,
+            expenses: (p.budget || 0) * 0.4,
+            profit: (p.budget || 0) * 0.6,
+            margin: 60
+        })));
     }
 
     // Clients
@@ -180,6 +195,23 @@ const mockAdapter: AxiosAdapter = async (config) => {
     if (url?.includes('/reports/aging')) {
         return success(DEMO_AGING_REPORT);
     }
+    if (url?.includes('/reports/projects')) {
+        return success(DEMO_PROJECTS.map(p => ({
+            projectId: p.id,
+            projectName: p.name,
+            clientName: p.client?.name || 'Internal',
+            revenue: p.budget || 0,
+            expenses: (p.budget || 0) * 0.4,
+            profit: (p.budget || 0) * 0.6,
+            margin: 60,
+            timeLogged: 120
+        })));
+    }
+    if (url?.includes('/reports/tax')) {
+        return success({
+            totals: { revenue: 200000, taxCollected: 20000, expenses: 68000, deductions: 13500, netTax: 6500 }
+        });
+    }
     if (url?.includes('/reports/export')) {
         return success([]);
     }
@@ -252,6 +284,34 @@ const mockAdapter: AxiosAdapter = async (config) => {
             return success({ success: true });
         }
         return success(DEMO_QUOTES[0]);
+    }
+
+    // Projects
+    if (url?.includes('/projects')) {
+        if (method === 'get') {
+            const idMatch = url.match(/\/projects\/([\w-]+)/);
+            if (idMatch && idMatch[1] && !url.endsWith('/projects')) {
+                const project = DEMO_PROJECTS.find(p => p.id === idMatch[1]);
+                return project ? success(project) : Promise.reject({ response: { status: 404 } });
+            }
+            return success(DEMO_PROJECTS);
+        }
+        if (method === 'post') return success({ ...DEMO_PROJECTS[0], id: 'proj-' + Math.random() });
+        return success(DEMO_PROJECTS[0]);
+    }
+
+    // Tasks
+    if (url?.includes('/tasks')) {
+        if (method === 'get') return success([]);
+        return success({ id: 'task-' + Math.random(), status: 'TODO' });
+    }
+
+    // Time Entries
+    if (url?.includes('/time-entries')) {
+        if (method === 'get') {
+            return success(DEMO_TIME_ENTRIES);
+        }
+        return success({ ...DEMO_TIME_ENTRIES[0], id: 'te-' + Math.random() });
     }
 
     // Fallback for unmocked routes in demo mode (return empty or generic success to prevent errors)

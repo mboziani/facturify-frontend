@@ -24,7 +24,7 @@ export default function ProjectTasks({ projectId }: ProjectTasksProps) {
     const loadTasks = useCallback(async () => {
         try {
             const data = await taskApi.getTasksByProject(projectId);
-            setTasks(data);
+            setTasks(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Failed to load tasks', err);
         } finally {

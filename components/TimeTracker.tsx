@@ -58,7 +58,7 @@ export default function TimeTracker() {
         if (!currentCompany) return;
         try {
             const data = await projectApi.getProjects(currentCompany.id, { status: 'IN_PROGRESS' });
-            setProjects(data);
+            setProjects(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Failed to load projects', err);
         }
@@ -140,7 +140,7 @@ export default function TimeTracker() {
                         disabled={!!activeEntry}
                     >
                         <option value="">Select Project</option>
-                        {projects.map(p => (
+                        {Array.isArray(projects) && projects.map(p => (
                             <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                     </select>

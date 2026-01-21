@@ -122,22 +122,48 @@ export default function DashboardPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {/* Total Revenue */}
-                <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
+                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:border-indigo-200 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-white/20 rounded-lg">
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="p-3 bg-indigo-50 rounded-lg group-hover:bg-indigo-100 transition-colors">
+                            <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{formatCurrency(stats?.totalRevenue || 0)}</div>
-                    <div className="text-indigo-100 text-sm">Total Revenue</div>
+                    <div className="text-3xl font-bold text-slate-900 mb-1">{formatCurrency(stats?.totalRevenue || 0)}</div>
+                    <div className="text-slate-500 text-sm">Total Revenue</div>
+                </div>
+
+                {/* Total Expenses */}
+                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:border-rose-200 transition-colors group">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-rose-50 rounded-lg group-hover:bg-rose-100 transition-colors">
+                            <svg className="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div className="text-3xl font-bold text-slate-900 mb-1">{formatCurrency(stats?.totalExpenses || 0)}</div>
+                    <div className="text-slate-500 text-sm">Total Expenses</div>
+                </div>
+
+                {/* Net Profit */}
+                <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="p-3 bg-white/20 rounded-lg">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div className="text-3xl font-bold mb-1">{formatCurrency(stats?.netProfit || 0)}</div>
+                    <div className="text-indigo-100 text-sm">Net Profit</div>
                 </div>
 
                 {/* Outstanding */}
-                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:border-amber-200 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-amber-50 rounded-lg">
+                        <div className="p-3 bg-amber-50 rounded-lg group-hover:bg-amber-100 transition-colors">
                             <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -145,43 +171,6 @@ export default function DashboardPage() {
                     </div>
                     <div className="text-3xl font-bold text-slate-900 mb-1">{formatCurrency(stats?.outstandingAmount || 0)}</div>
                     <div className="text-slate-500 text-sm">Outstanding</div>
-                    {stats && stats.overdueInvoices > 0 && (
-                        <div className="mt-2 text-xs text-amber-600">
-                            {stats.overdueInvoices} overdue · {formatCurrency(stats.overdueAmount)}
-                        </div>
-                    )}
-                </div>
-
-                {/* Total Invoices */}
-                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div className="text-3xl font-bold text-slate-900 mb-1">{stats?.totalInvoices || 0}</div>
-                    <div className="text-slate-500 text-sm">Total Invoices</div>
-                    <div className="mt-2 text-xs text-slate-600">
-                        {stats?.paidInvoices || 0} paid · {stats?.unpaidInvoices || 0} unpaid
-                    </div>
-                </div>
-
-                {/* Clients */}
-                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="p-3 bg-emerald-50 rounded-lg">
-                            <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div className="text-3xl font-bold text-slate-900 mb-1">{stats?.totalClients || 0}</div>
-                    <div className="text-slate-500 text-sm">Total Clients</div>
-                    <div className="mt-2 text-xs text-slate-600">
-                        {stats?.activeClients || 0} active (90 days)
-                    </div>
                 </div>
             </div>
 
@@ -285,26 +274,35 @@ export default function DashboardPage() {
                 )}
             </div>
 
-            {/* Revenue Chart */}
+            {/* Revenue & Profit Chart */}
             <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-8">
-                <h2 className="text-xl font-bold text-slate-900 mb-6">Revenue Trend (Last 6 Months)</h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-slate-900">Financial Performance</h2>
+                    <div className="flex gap-4 text-xs font-semibold uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5 text-indigo-600">
+                            <span className="w-2 h-2 rounded-full bg-indigo-600"></span> Revenue
+                        </span>
+                        <span className="flex items-center gap-1.5 text-rose-500">
+                            <span className="w-2 h-2 rounded-full bg-rose-500"></span> Expenses
+                        </span>
+                    </div>
+                </div>
                 <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={revenueData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                        <XAxis dataKey="month" stroke="#64748b" />
-                        <YAxis stroke="#64748b" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                        <XAxis dataKey="month" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                        <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value / 1000}k`} />
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: '#fff',
                                 border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
+                                borderRadius: '12px',
+                                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                             }}
                             formatter={(value: any) => formatCurrency(Number(value || 0))}
                         />
-                        <Legend />
-                        <Line type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2} name="Total Revenue" />
-                        <Line type="monotone" dataKey="paid" stroke="#10b981" strokeWidth={2} name="Paid" />
-                        <Line type="monotone" dataKey="outstanding" stroke="#f59e0b" strokeWidth={2} name="Outstanding" />
+                        <Line type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Revenue" />
+                        <Line type="monotone" dataKey="expenses" stroke="#f43f5e" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Expenses" />
                     </LineChart>
                 </ResponsiveContainer>
             </div>

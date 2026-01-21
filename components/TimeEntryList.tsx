@@ -15,7 +15,7 @@ interface TimeEntryListProps {
 
 export default function TimeEntryList({ entries, onDelete, onEdit, onRestart }: TimeEntryListProps) {
     // Group entries by date
-    const groupedEntries = entries.reduce((groups, entry) => {
+    const groupedEntries = (Array.isArray(entries) ? entries : []).reduce((groups, entry) => {
         const date = format(new Date(entry.startTime), 'yyyy-MM-dd');
         if (!groups[date]) {
             groups[date] = [];
@@ -127,7 +127,7 @@ export default function TimeEntryList({ entries, onDelete, onEdit, onRestart }: 
 function ClockIcon({ className }: { className?: string }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
     );
 }

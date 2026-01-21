@@ -37,6 +37,36 @@ export interface AgingReport {
     buckets: Record<string, AgingBucket>;
 }
 
+export interface ProjectProfitability {
+    projectId: string;
+    projectName: string;
+    clientName: string;
+    revenue: number;
+    expenses: number;
+    profit: number;
+    margin: number;
+    timeLogged: number; // in minutes
+}
+
+export interface TaxReport {
+    totals: {
+        revenue: number;
+        taxCollected: number;
+        expenses: number;
+        deductions: number;
+        netTax: number;
+    };
+    quarters?: {
+        name: string;
+        revenue: number;
+        taxCollected: number;
+        expenses: number;
+        deductions: number;
+        netTax: number;
+    }[];
+    annual?: any;
+}
+
 export const reportsApi = {
     getIncomeStatement: async (companyId: string, year: number): Promise<IncomeStatement> => {
         const response = await apiClient.get('/reports/income-statement', {
@@ -48,6 +78,20 @@ export const reportsApi = {
     getAgingReport: async (companyId: string): Promise<AgingReport> => {
         const response = await apiClient.get('/reports/aging', {
             params: { companyId },
+        });
+        return response.data;
+    },
+
+    getProjectProfitability: async (companyId: string): Promise<ProjectProfitability[]> => {
+        const response = await apiClient.get<ProjectProfitability[]>('/reports/projects', {
+            params: { companyId },
+        });
+        return response.data;
+    },
+
+    getTaxReport: async (companyId: string, year: number, period: 'quarterly' | 'annual'): Promise<TaxReport> => {
+        const response = await apiClient.get<TaxReport>('/reports/tax', {
+            params: { companyId, year, period },
         });
         return response.data;
     },

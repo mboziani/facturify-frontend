@@ -389,3 +389,82 @@ export const DEMO_QUOTES = [
         updatedAt: '2024-01-01T00:00:00Z',
     },
 ];
+// Demo Projects
+export const DEMO_PROJECTS = [
+    {
+        id: '1',
+        name: 'Website Redesign',
+        description: 'Complete overhaul of the corporate website using Next.js and Tailwind CSS.',
+        status: 'IN_PROGRESS',
+        startDate: '2024-01-10',
+        endDate: '2024-03-31',
+        budget: 15000,
+        companyId: 'demo-company-id',
+        clientId: '1',
+        client: { id: '1', name: 'Acme Corporation' },
+        createdAt: '2024-01-10T00:00:00Z',
+        updatedAt: '2024-02-20T00:00:00Z',
+    },
+    {
+        id: '2',
+        name: 'Mobile App Development',
+        description: 'Building a cross-platform mobile app for customer engagement.',
+        status: 'NOT_STARTED',
+        startDate: '2024-03-01',
+        endDate: '2024-06-30',
+        budget: 25000,
+        companyId: 'demo-company-id',
+        clientId: '2',
+        client: { id: '2', name: 'TechStart Inc.' },
+        createdAt: '2024-02-15T00:00:00Z',
+        updatedAt: '2024-02-15T00:00:00Z',
+    },
+    {
+        id: '3',
+        name: 'SEO Optimization',
+        description: 'Improving search engine rankings and organic traffic.',
+        status: 'COMPLETED',
+        startDate: '2023-11-01',
+        endDate: '2023-12-31',
+        budget: 5000,
+        companyId: 'demo-company-id',
+        clientId: '3',
+        client: { id: '3', name: 'Global Solutions Ltd.' },
+        createdAt: '2023-10-15T00:00:00Z',
+        updatedAt: '2024-01-05T00:00:00Z',
+    }
+];
+
+// Demo Time Entries
+export const DEMO_TIME_ENTRIES = [
+    {
+        id: 'te-1',
+        description: 'Homepage UI Design',
+        duration: 120, // 2 hours
+        startTime: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        endTime: new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString(),
+        billable: true,
+        status: 'LOCKED',
+        companyId: 'demo-company-id',
+        projectId: '1',
+        project: { id: '1', name: 'Website Redesign' },
+        clientId: '1',
+        client: { id: '1', name: 'Acme Corporation' },
+        hourlyRate: 150,
+    },
+    {
+        id: 'te-2',
+        description: 'React Component Development',
+        duration: 240, // 4 hours
+        startTime: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+        endTime: new Date(Date.now() - 1000 * 60 * 60 * 1).toISOString(),
+        billable: true,
+        status: 'APPROVED',
+        companyId: 'demo-company-id',
+        projectId: '1',
+        project: { id: '1', name: 'Website Redesign' },
+        clientId: '1',
+        client: { id: '1', name: 'Acme Corporation' },
+        hourlyRate: 150,
+    }
+];

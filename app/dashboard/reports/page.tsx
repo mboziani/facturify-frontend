@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
-import { reportsApi, IncomeStatement, AgingReport } from '@/lib/api/reportsApi';
+import { reportsApi, IncomeStatement, AgingReport, ProjectProfitability, TaxReport } from '@/lib/api/reportsApi';
 import { downloadCSV } from '@/lib/utils/csv';
 import toast from 'react-hot-toast';
 import {
@@ -18,19 +18,20 @@ import {
 
 export default function ReportsPage() {
     const { currentCompany } = useCompany();
-    const [activeTab, setActiveTab] = useState<'income' | 'aging' | 'tax' | 'export'>('income');
+    const [activeTab, setActiveTab] = useState<'income' | 'aging' | 'projects' | 'tax' | 'export'>('income');
     const [isLoading, setIsLoading] = useState(false);
 
     const [incomeData, setIncomeData] = useState<IncomeStatement | null>(null);
     const [agingData, setAgingData] = useState<AgingReport | null>(null);
-    const [taxData, setTaxData] = useState<any>(null);
+    const [projectData, setProjectData] = useState<ProjectProfitability[]>([]);
+    const [taxData, setTaxData] = useState<TaxReport | null>(null);
     const [year, setYear] = useState(new Date().getFullYear());
     const [taxPeriod, setTaxPeriod] = useState<'quarterly' | 'annual'>('quarterly');
 
     useEffect(() => {
         if (!currentCompany) return;
         loadData();
-    }, [currentCompany, activeTab, year]);
+    }, [currentCompany, activeTab, year, taxPeriod]);
 
     const loadData = async () => {
         if (!currentCompany) return;
@@ -42,9 +43,12 @@ export default function ReportsPage() {
             } else if (activeTab === 'aging') {
                 const data = await reportsApi.getAgingReport(currentCompany.id);
                 setAgingData(data);
+            } else if (activeTab === 'projects') {
+                const data = await reportsApi.getProjectProfitability(currentCompany.id);
+                setProjectData(Array.isArray(data) ? data : []);
             } else if (activeTab === 'tax') {
-                // Mock tax data - replace with actual API call when implemented
-                setTaxData(generateMockTaxData(year, taxPeriod));
+                const data = await reportsApi.getTaxReport(currentCompany.id, year, taxPeriod);
+                setTaxData(data);
             }
         } catch (error) {
             console.error('Failed to load report data:', error);
@@ -74,22 +78,6 @@ export default function ReportsPage() {
         }).format(amount);
     };
 
-    const generateMockTaxData = (year: number, period: 'quarterly' | 'annual') => {
-        if (period === 'quarterly') {
-            return {
-                quarters: [
-                    { name: 'Q1', revenue: 45000, taxCollected: 4500, expenses: 15000, deductions: 3000, netTax: 1500 },
-                    { name: 'Q2', revenue: 52000, taxCollected: 5200, expenses: 18000, deductions: 3500, netTax: 1700 },
-                    { name: 'Q3', revenue: 48000, taxCollected: 4800, expenses: 16000, deductions: 3200, netTax: 1600 },
-                    { name: 'Q4', revenue: 55000, taxCollected: 5500, expenses: 19000, deductions: 3800, netTax: 1700 },
-                ],
-                totals: { revenue: 200000, taxCollected: 20000, expenses: 68000, deductions: 13500, netTax: 6500 },
-            };
-        }
-        return {
-            annual: { revenue: 200000, taxCollected: 20000, expenses: 68000, deductions: 13500, netTax: 6500 },
-        };
-    };
 
     return (
         <div className="space-y-6">
@@ -99,17 +87,23 @@ export default function ReportsPage() {
 
             {/* Tabs */}
             <div className="border-b border-gray-200">
-                <nav className="-mb-px flex space-x-8">
-                    {['income', 'aging', 'tax', 'export'].map((tab) => (
+                <nav className="-mb-px flex space-x-8 overflow-x-auto">
+                    {[
+                        { id: 'income', label: 'Profit & Loss' },
+                        { id: 'aging', label: 'Receivables' },
+                        { id: 'projects', label: 'Project Profitability' },
+                        { id: 'tax', label: 'Tax Reports' },
+                        { id: 'export', label: 'Export Data' }
+                    ].map((tab) => (
                         <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab as any)}
-                            className={`${activeTab === tab
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id as any)}
+                            className={`${activeTab === tab.id
                                 ? 'border-indigo-500 text-indigo-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm capitalize`}
+                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
                         >
-                            {tab === 'income' ? 'Income Statement' : tab === 'aging' ? 'Aging Report' : tab === 'tax' ? 'Tax Reports' : 'Export Data'}
+                            {tab.label}
                         </button>
                     ))}
                 </nav>
@@ -176,6 +170,62 @@ export default function ReportsPage() {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">{formatCurrency(incomeData.totals.expenses)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-600">{formatCurrency(incomeData.totals.netIncome)}</td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Project Profitability View */}
+                    {activeTab === 'projects' && (
+                        <div className="space-y-6">
+                            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h2 className="text-lg font-semibold text-gray-900 mb-6">Project Profitability</h2>
+                                <div className="h-80 w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={projectData}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                            <XAxis dataKey="projectName" />
+                                            <YAxis />
+                                            <Tooltip formatter={(value: any) => formatCurrency(Number(value || 0))} />
+                                            <Legend />
+                                            <Bar dataKey="revenue" fill="#4F46E5" name="Revenue" radius={[4, 4, 0, 0]} />
+                                            <Bar dataKey="expenses" fill="#F43F5E" name="Expenses" radius={[4, 4, 0, 0]} />
+                                            <Bar dataKey="profit" fill="#10B981" name="Profit" radius={[4, 4, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Expenses</th>
+                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
+                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Margin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {projectData.map((project) => (
+                                            <tr key={project.projectId}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{project.projectName}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{project.clientName}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">{formatCurrency(project.revenue)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">{formatCurrency(project.expenses)}</td>
+                                                <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-semibold ${project.profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                    {formatCurrency(project.profit)}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${project.margin >= 30 ? 'bg-emerald-100 text-emerald-700' : project.margin >= 10 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>
+                                                        {project.margin.toFixed(1)}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
