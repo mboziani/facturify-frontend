@@ -16,8 +16,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const router = useRouter();
     const pathname = usePathname();
 
-    // Sidebar collapse state
+    // Sidebar collapse state (Desktop)
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    // Mobile menu state
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Load saved preference from localStorage
     useEffect(() => {
@@ -27,7 +29,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
     }, []);
 
-    // Toggle sidebar and persist state
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
+
     const toggleSidebar = () => {
         const newState = !isSidebarCollapsed;
         setIsSidebarCollapsed(newState);
@@ -178,9 +184,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                     </header>
 
-                    <div className="flex">
+                    <div className="flex relative">
+                        {/* Mobile Sidebar Overlay */}
+                        {isMobileMenuOpen && (
+                            <div
+                                className="fixed inset-0 bg-gray-900/50 z-40 md:hidden backdrop-blur-sm"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            />
+                        )}
+
                         {/* Sidebar Navigation */}
-                        <aside className={`hidden md:flex flex-col bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] sticky top-16 transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+                        <aside className={`
+                            fixed md:sticky top-0 md:top-16 left-0 z-50 h-full md:h-[calc(100vh-4rem)]
+                            bg-white border-r border-gray-200 transition-all duration-300
+                            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                            ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
+                            w-64
+                        `}>
                             {/* Sidebar Header with Logo */}
                             <div className={`p-4 border-b border-gray-100 ${isSidebarCollapsed ? 'flex justify-center' : ''}`}>
                                 <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
@@ -245,23 +265,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </aside>
 
                         {/* Main Content */}
-                        <main className="flex-1 p-6 lg:p-8">{children}</main>
+                        <main className="flex-1 p-4 lg:p-8 mb-20 md:mb-0 w-full max-w-[100vw] overflow-x-hidden">
+                            {children}
+                        </main>
                     </div>
 
                     {/* Mobile Bottom Navigation */}
-                    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-20">
-                        <div className="flex justify-around">
-                            {navLinks.map((link) => (
+                    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 pb-[env(safe-area-inset-bottom)]">
+                        <div className="flex justify-around items-center h-16 px-2">
+                            {navLinks.slice(0, 4).map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`flex flex-col items-center gap-1 py-3 px-4 flex-1 transition-colors ${isActive(link.href) ? 'text-indigo-600' : 'text-gray-500'
+                                    className={`flex flex-col items-center gap-1 p-2 flex-1 rounded-lg transition-colors ${isActive(link.href) ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-900'
                                         }`}
                                 >
                                     {link.icon}
-                                    <span className="text-xs font-medium">{link.name}</span>
+                                    <span className="text-[10px] font-medium truncate w-full text-center">{link.name}</span>
                                 </Link>
                             ))}
+                            {/* More Button */}
+                            <button
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                className={`flex flex-col items-center gap-1 p-2 flex-1 rounded-lg transition-colors ${isMobileMenuOpen ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-900'}`}
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                                <span className="text-[10px] font-medium">Menu</span>
+                            </button>
                         </div>
                     </nav>
 

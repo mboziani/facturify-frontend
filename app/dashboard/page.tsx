@@ -10,6 +10,7 @@ import type { Quote } from '@/types/quote';
 import { formatCurrency, formatDate } from '@/lib/utils/invoiceUtils';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
+import Onboarding from '@/components/Onboarding';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -20,18 +21,26 @@ export default function DashboardPage() {
     const [recentActivity, setRecentActivity] = useState<any>(null);
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
-    // Show welcome message if just logged in
+    // Show welcome message or onboarding
     useEffect(() => {
-        const justLoggedIn = localStorage.getItem('justLoggedIn');
-        if (justLoggedIn === 'true') {
-            localStorage.removeItem('justLoggedIn');
-            toast.success(`Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`, {
-                duration: 3000,
-                icon: '👋',
-            });
+        const isOnboardingCompleted = localStorage.getItem('onboardingCompleted');
+
+        if (!isOnboardingCompleted) {
+            setShowOnboarding(true);
+        } else {
+            // Only show toast if onboarding is already done
+            const justLoggedIn = localStorage.getItem('justLoggedIn');
+            if (justLoggedIn === 'true') {
+                localStorage.removeItem('justLoggedIn');
+                toast.success(`Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`, {
+                    duration: 3000,
+                    icon: '👋',
+                });
+            }
         }
-    }, [user?.firstName]);
+    }, [user]);
 
     useEffect(() => {
         if (currentCompany?.id) {
@@ -376,6 +385,9 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Onboarding Wizard */}
+            {showOnboarding && <Onboarding onComplete={() => setShowOnboarding(false)} />}
         </div>
     );
 }

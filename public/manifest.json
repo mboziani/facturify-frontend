@@ -2,7 +2,7 @@
     "name": "Facturify Platform",
     "short_name": "Facturify",
     "description": "All-in-One Business Management for Freelancers and Agencies",
-    "start_url": "./dashboard",
+    "start_url": "/dashboard",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4F46E5",

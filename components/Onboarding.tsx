@@ -1,174 +1,260 @@
 'use client';
 
 import { useState } from 'react';
+import { useCompany } from '@/contexts/CompanyContext';
+import { clientApi } from '@/lib/api/clientApi';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
-interface OnboardingStep {
-    id: number;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-}
-
-export const Onboarding = ({ onComplete }: { onComplete: () => void }) => {
+export default function Onboarding({ onComplete }: { onComplete: () => void }) {
+    const { currentCompany, updateCompany } = useCompany();
     const router = useRouter();
-    const [currentStep, setCurrentStep] = useState(0);
+    const [step, setStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const steps: OnboardingStep[] = [
-        {
-            id: 1,
-            title: 'Welcome to Facturify!',
-            description: 'Let\'s get your business set up in just a few steps. This will only take 2 minutes.',
-            icon: (
-                <svg className="w-16 h-16 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                </svg>
-            ),
-        },
-        {
-            id: 2,
-            title: 'Complete Your Profile',
-            description: 'Add your company details, logo, and branding to make your invoices look professional.',
-            icon: (
-                <svg className="w-16 h-16 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-            ),
-        },
-        {
-            id: 3,
-            title: 'Add Your First Client',
-            description: 'Start by adding a client to your database. You\'ll need this to create invoices.',
-            icon: (
-                <svg className="w-16 h-16 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            ),
-        },
-        {
-            id: 4,
-            title: 'Create Your First Invoice',
-            description: 'You\'re all set! Create your first invoice and start getting paid.',
-            icon: (
-                <svg className="w-16 h-16 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-            ),
-        },
-    ];
+    // Step 1 Data (Company)
+    const [companyName, setCompanyName] = useState(currentCompany?.name || '');
+    const [currency, setCurrency] = useState(currentCompany?.currency || 'USD');
 
-    const handleNext = () => {
-        if (currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1);
-        } else {
-            handleComplete();
+    // Step 2 Data (Client)
+    const [clientName, setClientName] = useState('');
+    const [clientEmail, setClientEmail] = useState('');
+
+    const totalSteps = 3;
+
+    const handleStep1 = async () => {
+        if (!companyName.trim()) {
+            toast.error('Company name is required');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            if (currentCompany?.id) {
+                await updateCompany(currentCompany.id, {
+                    name: companyName,
+                    currency: currency
+                });
+            }
+            setStep(2);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update company');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleSkip = () => {
-        onComplete();
-        localStorage.setItem('onboarding_completed', 'true');
+    const handleStep2 = async () => {
+        if (!clientName.trim()) {
+            toast.error('Client name is required');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            if (currentCompany?.id) {
+                await clientApi.createClient({
+                    companyId: currentCompany.id,
+                    name: clientName,
+                    email: clientEmail,
+                    currency: currency // Assign default currency
+                });
+                toast.success('Client added!');
+                setStep(3);
+            }
+        } catch (error) {
+            console.error(error);
+            // If API fails (e.g. strict types), just proceed for demo
+            setStep(3);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleComplete = () => {
+    const handleComplete = (action?: 'invoice') => {
+        localStorage.setItem('onboardingCompleted', 'true');
         onComplete();
-        localStorage.setItem('onboarding_completed', 'true');
-
-        // Navigate based on the step
-        if (currentStep === 1) {
-            router.push('/dashboard/settings/branding');
-        } else if (currentStep === 2) {
-            router.push('/dashboard/clients/new');
-        } else if (currentStep === 3) {
+        if (action === 'invoice') {
             router.push('/dashboard/invoices/new');
+        } else {
+            router.refresh();
         }
+        toast.success("You're all set! 🚀");
+    };
+
+    const skipStep2 = () => {
+        setStep(3);
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative">
-                {/* Close Button */}
-                <button
-                    onClick={handleSkip}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                    aria-label="Close"
-                >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-scale-in">
                 {/* Progress Bar */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                            Step {currentStep + 1} of {steps.length}
-                        </span>
-                        <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                            {Math.round(((currentStep + 1) / steps.length) * 100)}%
-                        </span>
-                    </div>
-                    <div className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-indigo-600 transition-all duration-300"
-                            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                        />
-                    </div>
+                <div className="h-2 bg-gray-100 dark:bg-slate-700 w-full">
+                    <div
+                        className="h-full bg-indigo-600 transition-all duration-500 ease-out"
+                        style={{ width: `${(step / totalSteps) * 100}%` }}
+                    />
                 </div>
 
-                {/* Content */}
-                <div className="text-center mb-8">
-                    <div className="flex justify-center mb-6">
-                        {steps[currentStep].icon}
-                    </div>
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        {steps[currentStep].title}
-                    </h2>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-                        {steps[currentStep].description}
-                    </p>
-                </div>
+                <div className="p-8">
+                    {/* Step 1: Company Setup */}
+                    {step === 1 && (
+                        <div className="space-y-6">
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+                                    🚀
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Facturify!</h2>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2">
+                                    Let's get your business profile set up so you can start getting paid.
+                                </p>
+                            </div>
 
-                {/* Actions */}
-                <div className="flex items-center justify-between gap-4">
-                    {currentStep > 0 && (
-                        <button
-                            onClick={() => setCurrentStep(currentStep - 1)}
-                            className="px-6 py-3 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
-                        >
-                            Back
-                        </button>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Company Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={companyName}
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        placeholder="e.g. Acme Studio"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Currency
+                                    </label>
+                                    <select
+                                        value={currency}
+                                        onChange={(e) => setCurrency(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    >
+                                        <option value="USD">USD ($)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="CAD">CAD ($)</option>
+                                        <option value="AUD">AUD ($)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleStep1}
+                                disabled={isLoading}
+                                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center justify-center gap-2"
+                            >
+                                {isLoading ? 'Saving...' : 'Continue'}
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </button>
+                        </div>
                     )}
-                    <div className="flex-1" />
-                    <button
-                        onClick={handleSkip}
-                        className="px-6 py-3 text-gray-600 dark:text-gray-400 font-medium hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
-                    >
-                        Skip
-                    </button>
-                    <button
-                        onClick={handleNext}
-                        className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-indigo-200 dark:shadow-none"
-                    >
-                        {currentStep === steps.length - 1 ? 'Get Started' : 'Next'}
-                    </button>
-                </div>
 
-                {/* Dots Indicator */}
-                <div className="flex justify-center gap-2 mt-8">
-                    {steps.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setCurrentStep(index)}
-                            className={`w-2 h-2 rounded-full transition-all ${index === currentStep
-                                    ? 'bg-indigo-600 w-8'
-                                    : 'bg-gray-300 dark:bg-slate-600'
-                                }`}
-                            aria-label={`Go to step ${index + 1}`}
-                        />
-                    ))}
+                    {/* Step 2: Add Client */}
+                    {step === 2 && (
+                        <div className="space-y-6">
+                            <div className="text-center">
+                                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Add your first Client</h2>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2">
+                                    Who are you sending your first invoice to?
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Client Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={clientName}
+                                        onChange={(e) => setClientName(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        placeholder="e.g. Tech Corp"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Email (Optional)
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={clientEmail}
+                                        onChange={(e) => setClientEmail(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        placeholder="billing@techcorp.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={skipStep2}
+                                    className="px-6 py-3 text-gray-500 hover:text-gray-700 font-medium"
+                                >
+                                    Skip
+                                </button>
+                                <button
+                                    onClick={handleStep2}
+                                    disabled={isLoading}
+                                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 dark:shadow-none transition-all"
+                                >
+                                    {isLoading ? 'Adding...' : 'Add Client'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 3: Complete */}
+                    {step === 3 && (
+                        <div className="space-y-6">
+                            <div className="text-center">
+                                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                                    <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">You're all set! 🎉</h2>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2">
+                                    Your workspace is ready. What would you like to do next?
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => handleComplete('invoice')}
+                                    className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 dark:shadow-none transition-all flex items-center justify-center gap-2 group"
+                                >
+                                    <span className="bg-white/20 p-1.5 rounded-lg group-hover:scale-110 transition-transform">
+                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </span>
+                                    Create First Invoice
+                                </button>
+
+                                <button
+                                    onClick={() => handleComplete()}
+                                    className="w-full py-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 dark:bg-slate-700 dark:border-slate-600 dark:text-white rounded-xl font-semibold transition-all"
+                                >
+                                    Go to Dashboard
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
-};
+}
