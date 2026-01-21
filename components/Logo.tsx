@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 interface LogoProps {
     className?: string;
@@ -11,14 +11,18 @@ export const Logo: React.FC<LogoProps> = ({
     showText = true,
     variant = 'color'
 }) => {
+    const uniqueId = useId();
+    const gradientId = `logo-gradient-${uniqueId}`;
+    const gradientDarkId = `logo-gradient-dark-${uniqueId}`;
+
     // Gradient definitions for reusability
     const Gradient = () => (
         <defs>
-            <linearGradient id="logo-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <linearGradient id={gradientId} x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#4F46E5" /> {/* Indigo-600 */}
                 <stop offset="100%" stopColor="#7C3AED" /> {/* Violet-600 */}
             </linearGradient>
-            <linearGradient id="logo-gradient-dark" x1="0%" y1="100%" x2="100%" y2="0%">
+            <linearGradient id={gradientDarkId} x1="0%" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#818CF8" /> {/* Indigo-400 */}
                 <stop offset="100%" stopColor="#A78BFA" /> {/* Violet-400 */}
             </linearGradient>
@@ -26,7 +30,7 @@ export const Logo: React.FC<LogoProps> = ({
     );
 
     // Use gradient for both color and dark variants, white only for light
-    const fillColor = variant === 'light' ? 'currentColor' : (variant === 'dark' ? 'url(#logo-gradient-dark)' : 'url(#logo-gradient)');
+    const fillColor = variant === 'light' ? 'currentColor' : (variant === 'dark' ? `url(#${gradientDarkId})` : `url(#${gradientId})`);
     const textColor = variant === 'dark' ? 'text-white' : 'text-slate-900';
     const bgOpacity = variant === 'dark' ? '0.2' : '0.1';
 
