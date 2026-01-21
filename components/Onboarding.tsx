@@ -58,7 +58,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
                     companyId: currentCompany.id,
                     name: clientName,
                     email: clientEmail,
-                    currency: currency // Assign default currency
+                    // currency property is not part of CreateClientData type, simplified for now
                 });
                 toast.success('Client added!');
                 setStep(3);
