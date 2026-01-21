@@ -127,7 +127,7 @@ export default function QuotesPage() {
                 <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                    className="px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white sm:w-48"
                 >
                     <option value="">All Status</option>
                     <option value="DRAFT">Draft</option>
