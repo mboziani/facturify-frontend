@@ -88,7 +88,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-scale-in">
                 {/* Progress Bar */}
                 <div className="h-2 bg-gray-100 dark:bg-slate-700 w-full">
