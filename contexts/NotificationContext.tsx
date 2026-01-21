@@ -2,23 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
-import apiClient from '@/lib/api/client';
-
-export interface Notification {
-    id: string;
-    userId: string;
-    companyId?: string;
-    type: string;
-    title: string;
-    message: string;
-    data?: any;
-    priority: 'low' | 'medium' | 'high';
-    read: boolean;
-    readAt?: string;
-    actionUrl?: string;
-    actionLabel?: string;
-    createdAt: string;
-}
+import { notificationsApi, Notification } from '@/lib/api/notificationsApi';
 
 interface NotificationContextType {
     notifications: Notification[];
@@ -43,12 +27,11 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
         setIsLoading(true);
         try {
-            const response = await apiClient.get('/notifications');
-            const data = response.data;
+            const data = await notificationsApi.getNotifications();
             setNotifications(data);
 
             // Calculate unread count
-            const unread = data.filter((n: Notification) => !n.read).length;
+            const unread = data.filter((n) => !n.read).length;
             setUnreadCount(unread);
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
@@ -61,8 +44,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         if (!user) return;
 
         try {
-            const response = await apiClient.get('/notifications/unread-count');
-            setUnreadCount(response.data.count);
+            const response = await notificationsApi.getUnreadCount();
+            setUnreadCount(response.count);
         } catch (error) {
             console.error('Failed to fetch unread count:', error);
         }
@@ -70,7 +53,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     const markAsRead = async (id: string) => {
         try {
-            await apiClient.patch(`/notifications/${id}/read`);
+            await notificationsApi.markAsRead(id);
 
             // Update local state
             setNotifications(prev =>
@@ -84,7 +67,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     const markAllAsRead = async () => {
         try {
-            await apiClient.patch('/notifications/read-all');
+            await notificationsApi.markAllAsRead();
 
             // Update local state
             setNotifications(prev =>
@@ -98,7 +81,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     const deleteNotification = async (id: string) => {
         try {
-            await apiClient.delete(`/notifications/${id}`);
+            await notificationsApi.deleteNotification(id);
 
             // Update local state
             const notification = notifications.find(n => n.id === id);
@@ -157,3 +140,4 @@ export function useNotifications() {
     }
     return context;
 }
+

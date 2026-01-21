@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useNotifications, Notification } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { Notification } from '@/lib/api/notificationsApi';
 import { formatDistanceToNow, format } from 'date-fns';
 
 export default function NotificationsPage() {
@@ -96,8 +97,8 @@ export default function NotificationsPage() {
                         <button
                             onClick={() => setFilter('all')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'all'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                                 }`}
                         >
                             All ({notifications.length})
@@ -105,8 +106,8 @@ export default function NotificationsPage() {
                         <button
                             onClick={() => setFilter('unread')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'unread'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                                 }`}
                         >
                             Unread ({unreadCount})
