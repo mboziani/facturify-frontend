@@ -128,10 +128,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <div className="flex items-center justify-between h-full">
                                 {/* Left Side: Sidebar Toggle & Switcher */}
                                 <div className="flex items-center gap-4">
+                                    {/* Mobile Logo */}
+                                    <Link href="/dashboard" className="lg:hidden">
+                                        <Logo className="w-8 h-8" showText={false} />
+                                    </Link>
+
                                     {/* Sidebar Toggle Button (visible on desktop) */}
                                     <button
                                         onClick={toggleSidebar}
-                                        className="hidden md:flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-colors"
+                                        className="hidden lg:flex items-center justify-center p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-colors"
                                         title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                                     >
                                         <svg
@@ -188,17 +193,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         {/* Mobile Sidebar Overlay */}
                         {isMobileMenuOpen && (
                             <div
-                                className="fixed inset-0 bg-gray-900/50 z-40 md:hidden backdrop-blur-sm"
+                                className="fixed inset-0 bg-gray-900/50 z-40 lg:hidden backdrop-blur-sm"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             />
                         )}
 
                         {/* Sidebar Navigation */}
                         <aside className={`
-                            fixed md:sticky top-0 md:top-16 left-0 z-50 h-full md:h-[calc(100vh-4rem)]
+                            fixed lg:sticky top-0 lg:top-16 left-0 z-50 h-full lg:h-[calc(100vh-4rem)]
                             bg-white border-r border-gray-200 transition-all duration-300
-                            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-                            ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
+                            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+                            ${isSidebarCollapsed ? 'lg:w-20' : 'lg:w-64'}
                             w-64
                         `}>
                             {/* Sidebar Header with Logo */}
@@ -265,13 +270,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </aside>
 
                         {/* Main Content */}
-                        <main className="flex-1 p-4 lg:p-8 mb-20 md:mb-0 w-full max-w-[100vw] overflow-x-hidden">
+                        <main className="flex-1 p-4 lg:p-8 mb-20 lg:mb-0 w-full max-w-[100vw] overflow-x-hidden">
                             {children}
                         </main>
                     </div>
 
                     {/* Mobile Bottom Navigation */}
-                    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 pb-[env(safe-area-inset-bottom)]">
+                    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 pb-[env(safe-area-inset-bottom)]">
                         <div className="flex justify-around items-center h-16 px-2">
                             {navLinks.slice(0, 4).map((link) => (
                                 <Link

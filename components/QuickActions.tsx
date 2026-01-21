@@ -52,7 +52,7 @@ export const QuickActions = () => {
     return (
         <>
             {/* Floating Button */}
-            <div className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-40 pb-[env(safe-area-inset-bottom)]">
+            <div className="fixed bottom-24 lg:bottom-8 right-4 lg:right-8 z-50 pb-[env(safe-area-inset-bottom)]">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-110 active:scale-95"
