@@ -5,6 +5,7 @@ import { useCompany } from '@/contexts/CompanyContext';
 import { clientApi } from '@/lib/api/clientApi';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Logo } from '@/components/Logo';
 
 export default function Onboarding({ onComplete }: { onComplete: () => void }) {
     const { currentCompany, updateCompany } = useCompany();
@@ -80,7 +81,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
         } else {
             router.refresh();
         }
-        toast.success("You're all set! 🚀");
+        toast.success("You're all set!");
     };
 
     const skipStep2 = () => {
@@ -103,8 +104,8 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
                     {step === 1 && (
                         <div className="space-y-6">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
-                                    🚀
+                                <div className="flex justify-center mb-6">
+                                    <Logo className="w-16 h-16" showText={false} />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Facturify!</h2>
                                 <p className="text-gray-500 dark:text-gray-400 mt-2">
@@ -225,7 +226,7 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">You're all set! 🎉</h2>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">You're all set!</h2>
                                 <p className="text-gray-500 dark:text-gray-400 mt-2">
                                     Your workspace is ready. What would you like to do next?
                                 </p>

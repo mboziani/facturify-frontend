@@ -36,7 +36,6 @@ export default function DashboardPage() {
                 localStorage.removeItem('justLoggedIn');
                 toast.success(`Welcome back${user?.firstName ? `, ${user.firstName}` : ''}!`, {
                     duration: 3000,
-                    icon: '👋',
                 });
             }
         }
