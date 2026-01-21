@@ -8,6 +8,7 @@ import { projectApi } from '@/lib/api/projectApi';
 import type { Project, ProjectStatus } from '@/types/project';
 import { formatCurrency } from '@/lib/utils/invoiceUtils';
 import ProjectTasks from '@/components/ProjectTasks';
+import ProjectInvoices from '@/components/ProjectInvoices';
 
 export default function ProjectDetailContent({ id }: { id: string }) {
     const router = useRouter();
@@ -253,9 +254,7 @@ export default function ProjectDetailContent({ id }: { id: string }) {
                     <ProjectTasks projectId={id} />
                 )}
                 {activeTab === 'invoices' && (
-                    <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                        <p className="text-slate-500">Linked invoices will appear here.</p>
-                    </div>
+                    <ProjectInvoices projectId={id} clientId={project.clientId} />
                 )}
                 {activeTab === 'files' && (
                     <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">

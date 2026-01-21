@@ -28,6 +28,9 @@ export const invoiceApi = {
         if (filters.clientId) {
             params.clientId = filters.clientId;
         }
+        if (filters.projectId) {
+            params.projectId = filters.projectId;
+        }
         const response = await apiClient.get<Invoice[]>('/invoices', { params });
         return response.data;
     },

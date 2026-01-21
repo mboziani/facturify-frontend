@@ -41,6 +41,7 @@ export interface Invoice {
     footer?: string;
     companyId: string;
     clientId: string;
+    projectId?: string;
     client?: {
         id: string;
         name: string;
@@ -59,6 +60,7 @@ export interface Invoice {
 export interface CreateInvoiceData {
     companyId: string;
     clientId: string;
+    projectId?: string;
     issueDate: string;
     dueDate: string;
     taxRate?: number;
@@ -81,6 +83,7 @@ export interface CreateInvoiceItemData {
 // Update invoice data
 export interface UpdateInvoiceData {
     clientId?: string;
+    projectId?: string;
     issueDate?: string;
     dueDate?: string;
     taxRate?: number;
@@ -103,6 +106,7 @@ export interface InvoiceFilters {
     companyId: string;
     status?: InvoiceStatus;
     clientId?: string;
+    projectId?: string;
 }
 
 // Invoice totals (for calculations)
