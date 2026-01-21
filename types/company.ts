@@ -40,6 +40,9 @@ export interface Company {
     invoiceFooter?: string;
     defaultPaymentTerms: number;
 
+    // Subscription
+    planId: 'FREE' | 'PRO' | 'ENTERPRISE';
+
     // Timestamps
     createdAt: string;
     updatedAt: string;

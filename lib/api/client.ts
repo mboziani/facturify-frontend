@@ -15,7 +15,8 @@ import {
     DEMO_RECURRING_INVOICES,
     DEMO_QUOTES,
     DEMO_PROJECTS,
-    DEMO_TIME_ENTRIES
+    DEMO_TIME_ENTRIES,
+    DEMO_SUBSCRIPTION
 } from '../mock-data';
 
 // Helper to check if demo mode is active
@@ -312,6 +313,22 @@ const mockAdapter: AxiosAdapter = async (config) => {
             return success(DEMO_TIME_ENTRIES);
         }
         return success({ ...DEMO_TIME_ENTRIES[0], id: 'te-' + Math.random() });
+    }
+
+    // Subscriptions
+    if (url?.includes('/subscriptions')) {
+        if (url?.includes('/checkout')) {
+            return success({ url: 'https://checkout.stripe.com/demo' });
+        }
+        if (url?.includes('/portal')) {
+            return success({ url: 'https://billing.stripe.com/demo' });
+        }
+        if (method === 'get') {
+            return success(DEMO_SUBSCRIPTION);
+        }
+        if (method === 'delete') {
+            return success({ success: true });
+        }
     }
 
     // Fallback for unmocked routes in demo mode (return empty or generic success to prevent errors)

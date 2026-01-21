@@ -16,8 +16,11 @@ import {
     ResponsiveContainer
 } from 'recharts';
 
+import { usePermissions } from '@/hooks/usePermissions';
+
 export default function ReportsPage() {
     const { currentCompany } = useCompany();
+    const { hasFeature } = usePermissions();
     const [activeTab, setActiveTab] = useState<'income' | 'aging' | 'projects' | 'tax' | 'export'>('income');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -89,23 +92,32 @@ export default function ReportsPage() {
             <div className="border-b border-gray-200">
                 <nav className="-mb-px flex space-x-8 overflow-x-auto">
                     {[
-                        { id: 'income', label: 'Profit & Loss' },
-                        { id: 'aging', label: 'Receivables' },
-                        { id: 'projects', label: 'Project Profitability' },
-                        { id: 'tax', label: 'Tax Reports' },
-                        { id: 'export', label: 'Export Data' }
-                    ].map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
-                            className={`${activeTab === tab.id
-                                ? 'border-indigo-500 text-indigo-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
+                        { id: 'income', label: 'Profit & Loss', requiredFeature: null },
+                        { id: 'aging', label: 'Receivables', requiredFeature: null },
+                        { id: 'projects', label: 'Project Profitability', requiredFeature: 'ADVANCED_REPORTS' as const },
+                        { id: 'tax', label: 'Tax Reports', requiredFeature: 'ADVANCED_REPORTS' as const },
+                        { id: 'export', label: 'Export Data', requiredFeature: null }
+                    ].map((tab) => {
+                        const isLocked = !!(tab.requiredFeature && !hasFeature(tab.requiredFeature));
+                        return (
+                            <button
+                                key={tab.id}
+                                disabled={isLocked}
+                                onClick={() => setActiveTab(tab.id as any)}
+                                className={`${activeTab === tab.id
+                                    ? 'border-indigo-500 text-indigo-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    } ${isLocked ? 'opacity-50 cursor-not-allowed' : ''} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors flex items-center gap-2`}
+                            >
+                                {tab.label}
+                                {isLocked && (
+                                    <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                )}
+                            </button>
+                        );
+                    })}
                 </nav>
             </div>
 

@@ -6,17 +6,43 @@ import { useCompany } from '@/contexts/CompanyContext';
 import { expenseApi, Expense, ExpenseCategory } from '@/lib/api/expenseApi';
 import toast from 'react-hot-toast';
 
+import { usePermissions } from '@/hooks/usePermissions';
+
 export default function ExpensesPage() {
     const { currentCompany } = useCompany();
+    const { hasFeature } = usePermissions();
+    const isLocked = !hasFeature('EXPENSE_TRACKING');
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
     useEffect(() => {
-        if (currentCompany) {
+        if (currentCompany && !isLocked) {
             loadExpenses();
         }
-    }, [currentCompany]);
+    }, [currentCompany, isLocked]);
+
+    if (isLocked) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm mt-8">
+                <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Professional Feature</h3>
+                <p className="text-slate-600 mb-6 max-w-sm">
+                    Expense tracking is available on our Professional and Business plans. Upgrade to start tracking your business spending and gain deeper financial insights.
+                </p>
+                <Link
+                    href="/dashboard/subscription"
+                    className="inline-block py-3 px-8 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-md"
+                >
+                    Upgrade to Unlock
+                </Link>
+            </div>
+        );
+    }
 
     const loadExpenses = async () => {
         if (!currentCompany) return;

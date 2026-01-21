@@ -2,65 +2,99 @@
 
 import { useCompany } from '@/contexts/CompanyContext';
 import { useState } from 'react';
-
-const PLANS = [
-    {
-        id: 'FREE',
-        name: 'Starter',
-        price: '$0',
-        period: '/month',
-        description: 'Perfect for freelancers just starting out.',
-        features: [
-            '10 Invoices / month',
-            '5 Clients',
-            '1 Active User',
-            'Basic Reports',
-            'Email Support'
-        ],
-        button: 'Current Plan',
-        current: true,
-    },
-    {
-        id: 'PRO',
-        name: 'Professional',
-        price: '$19',
-        period: '/month',
-        description: 'For growing businesses that need automation.',
-        features: [
-            'Unlimited Invoices',
-            'Unlimited Clients',
-            '1 Active User',
-            'Recurring Invoices',
-            'Expense Tracking',
-            'Advanced Reports',
-            'Priority Support'
-        ],
-        button: 'Upgrade to Pro',
-        highlight: true,
-        current: false,
-    },
-    {
-        id: 'ENTERPRISE',
-        name: 'Business',
-        price: '$49',
-        period: '/month',
-        description: 'Full power for scaling teams.',
-        features: [
-            'Everything in Pro',
-            '5 Team Members',
-            'Team Collaboration',
-            'Custom Branding',
-            'API Access',
-            'Dedicated Support'
-        ],
-        button: 'Start Trial',
-        current: false,
-    },
-];
+import { subscriptionApi } from '@/lib/api/subscriptionApi';
+import { SubscriptionPlan } from '@/types/subscription';
+import toast from 'react-hot-toast';
 
 export default function SubscriptionPage() {
     const { currentCompany } = useCompany();
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const PLANS = [
+        {
+            id: 'FREE' as SubscriptionPlan,
+            name: 'Starter',
+            price: billingCycle === 'monthly' ? '$0' : '$0',
+            period: billingCycle === 'monthly' ? '/month' : '/year',
+            description: 'Perfect for freelancers just starting out.',
+            features: [
+                '10 Invoices / month',
+                '5 Clients',
+                '1 Active User',
+                'Basic Reports',
+                'Email Support'
+            ],
+            button: 'Current Plan',
+            current: currentCompany?.planId === 'FREE',
+        },
+        {
+            id: 'PRO' as SubscriptionPlan,
+            name: 'Professional',
+            price: billingCycle === 'monthly' ? '$19' : '$182',
+            period: billingCycle === 'monthly' ? '/month' : '/year',
+            description: 'For growing businesses that need automation.',
+            features: [
+                'Unlimited Invoices',
+                'Unlimited Clients',
+                '1 Active User',
+                'Recurring Invoices',
+                'Expense Tracking',
+                'Advanced Reports',
+                'Priority Support'
+            ],
+            button: 'Upgrade to Pro',
+            highlight: true,
+            current: currentCompany?.planId === 'PRO',
+        },
+        {
+            id: 'ENTERPRISE' as SubscriptionPlan,
+            name: 'Business',
+            price: billingCycle === 'monthly' ? '$49' : '$470',
+            period: billingCycle === 'monthly' ? '/month' : '/year',
+            description: 'Full power for scaling teams.',
+            features: [
+                'Everything in Pro',
+                '5 Team Members',
+                'Team Collaboration',
+                'Custom Branding',
+                'API Access',
+                'Dedicated Support'
+            ],
+            button: 'Contact Sales',
+            current: currentCompany?.planId === 'ENTERPRISE',
+        },
+    ];
+
+    const handleUpgrade = async (planId: SubscriptionPlan) => {
+        if (!currentCompany) return;
+        if (planId === currentCompany.planId) return;
+
+        setIsLoading(true);
+        try {
+            const { url } = await subscriptionApi.createCheckoutSession(currentCompany.id, planId);
+            window.location.href = url;
+        } catch (error) {
+            console.error('Failed to create checkout session:', error);
+            toast.error('Failed to initiate checkout. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleManageBilling = async () => {
+        if (!currentCompany) return;
+        setIsLoading(true);
+        try {
+            const { url } = await subscriptionApi.createPortalSession(currentCompany.id);
+            window.location.href = url;
+        } catch (error) {
+            console.error('Failed to create portal session:', error);
+            toast.error('Failed to open billing portal.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="p-6 sm:p-8 max-w-7xl mx-auto">
@@ -126,14 +160,18 @@ export default function SubscriptionPage() {
                         </ul>
 
                         <button
-                            disabled={plan.current}
-                            className={`w-full py-3 px-4 rounded-xl text-sm font-semibold transition-colors ${plan.current
+                            disabled={plan.current || isLoading}
+                            onClick={() => handleUpgrade(plan.id)}
+                            className={`w-full py-3 px-4 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${plan.current
                                 ? 'bg-slate-100 text-slate-400 cursor-default'
                                 : plan.highlight
                                     ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
                                     : 'bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50'
                                 }`}
                         >
+                            {isLoading && !plan.current && (
+                                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            )}
                             {plan.button}
                         </button>
                     </div>
@@ -142,7 +180,21 @@ export default function SubscriptionPage() {
 
             {/* Current Usage Info */}
             <div className="mt-16 bg-slate-50 rounded-2xl p-8 border border-slate-200">
-                <h3 className="text-lg font-bold text-slate-900 mb-6">Current Usage</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <h3 className="text-lg font-bold text-slate-900">Current Usage</h3>
+                    {currentCompany?.planId !== 'FREE' && (
+                        <button
+                            onClick={handleManageBilling}
+                            disabled={isLoading}
+                            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Manage Billing & Invoices
+                        </button>
+                    )}
+                </div>
                 <div className="grid sm:grid-cols-3 gap-6">
                     <div>
                         <div className="flex justify-between text-sm mb-2">

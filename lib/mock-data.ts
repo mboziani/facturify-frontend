@@ -25,6 +25,7 @@ export const DEMO_COMPANY = {
     postalCode: '94102',
     website: 'https://www.democompany.com',
     logoUrl: null,
+    planId: 'FREE',
 };
 
 export const DEMO_DASHBOARD_STATS = {
@@ -468,3 +469,12 @@ export const DEMO_TIME_ENTRIES = [
         hourlyRate: 150,
     }
 ];
+// Demo Subscription
+export const DEMO_SUBSCRIPTION = {
+    id: 'sub-demo-123',
+    companyId: 'demo-company-id',
+    planId: 'FREE',
+    status: 'ACTIVE',
+    currentPeriodEnd: new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString(), // 15 days from now
+    cancelAtPeriodEnd: false,
+};
