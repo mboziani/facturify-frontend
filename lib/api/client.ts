@@ -16,7 +16,8 @@ import {
     DEMO_QUOTES,
     DEMO_PROJECTS,
     DEMO_TIME_ENTRIES,
-    DEMO_SUBSCRIPTION
+    DEMO_SUBSCRIPTION,
+    DEMO_MEMBERS
 } from '../mock-data';
 
 // Helper to check if demo mode is active
@@ -151,6 +152,10 @@ const mockAdapter: AxiosAdapter = async (config) => {
         }
         // Get One
         return success(DEMO_COMPANY);
+    }
+
+    if (url?.match(/\/companies\/[\w-]+\/members/)) {
+        return success(DEMO_MEMBERS);
     }
 
     // Notifications

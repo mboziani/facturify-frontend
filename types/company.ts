@@ -84,3 +84,18 @@ export interface UpdateCompanyData extends Partial<CreateCompanyData> { }
 export interface CompanyRole {
     role: 'owner' | 'admin' | 'member' | null;
 }
+
+export interface CompanyMember {
+    id: string;
+    userId: string;
+    companyId: string;
+    role: 'owner' | 'admin' | 'member';
+    joinedAt: string;
+    user: {
+        id: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        avatarUrl?: string;
+    };
+}

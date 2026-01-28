@@ -1,5 +1,5 @@
 import apiClient from './client';
-import { Company, CreateCompanyData, UpdateCompanyData, CompanyRole } from '@/types/company';
+import { Company, CreateCompanyData, UpdateCompanyData, CompanyRole, CompanyMember } from '@/types/company';
 
 export const companyApi = {
     /**
@@ -61,6 +61,14 @@ export const companyApi = {
      */
     getRole: async (id: string): Promise<CompanyRole> => {
         const response = await apiClient.get<CompanyRole>(`/companies/${id}/role`);
+        return response.data;
+    },
+
+    /**
+     * Get company members
+     */
+    getMembers: async (id: string): Promise<CompanyMember[]> => {
+        const response = await apiClient.get<CompanyMember[]>(`/companies/${id}/members`);
         return response.data;
     },
 };

@@ -470,6 +470,37 @@ export const DEMO_TIME_ENTRIES = [
     }
 ];
 // Demo Subscription
+export const DEMO_MEMBERS = [
+    {
+        id: 'mem-1',
+        userId: 'demo-user-id',
+        companyId: 'demo-company-id',
+        role: 'owner',
+        joinedAt: '2024-01-01T00:00:00Z',
+        user: {
+            id: 'demo-user-id',
+            email: 'demo@facturify.com',
+            firstName: 'Demo',
+            lastName: 'User',
+            avatarUrl: undefined
+        }
+    },
+    {
+        id: 'mem-2',
+        userId: 'user-2',
+        companyId: 'demo-company-id',
+        role: 'admin',
+        joinedAt: '2024-01-15T00:00:00Z',
+        user: {
+            id: 'user-2',
+            email: 'sarah@facturify.com',
+            firstName: 'Sarah',
+            lastName: 'Connor',
+            avatarUrl: undefined
+        }
+    }
+];
+
 export const DEMO_SUBSCRIPTION = {
     id: 'sub-demo-123',
     companyId: 'demo-company-id',

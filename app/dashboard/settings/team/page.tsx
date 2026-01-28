@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { teamInvitationsApi, TeamInvitation } from '@/lib/api/teamInvitationsApi';
+import { companyApi } from '@/lib/api/company';
+import { CompanyMember } from '@/types/company';
 import toast from 'react-hot-toast';
 
 export default function TeamSettingsPage() {
     const { currentCompany } = useCompany();
     const [invitations, setInvitations] = useState<TeamInvitation[]>([]);
+    const [members, setMembers] = useState<CompanyMember[]>([]);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [inviteEmail, setInviteEmail] = useState('');
     const [inviteRole, setInviteRole] = useState<'MEMBER' | 'ADMIN'>('MEMBER');
@@ -16,6 +19,7 @@ export default function TeamSettingsPage() {
     useEffect(() => {
         if (currentCompany) {
             loadInvitations();
+            loadMembers();
         }
     }, [currentCompany]);
 
@@ -26,6 +30,16 @@ export default function TeamSettingsPage() {
             setInvitations(data);
         } catch (error) {
             console.error('Failed to load invitations:', error);
+        }
+    };
+
+    const loadMembers = async () => {
+        if (!currentCompany) return;
+        try {
+            const data = await companyApi.getMembers(currentCompany.id);
+            setMembers(data);
+        } catch (error) {
+            console.error('Failed to load members:', error);
         }
     };
 
@@ -91,7 +105,7 @@ export default function TeamSettingsPage() {
                 </button>
             </div>
 
-            {/* Existing Members Placeholder */}
+            {/* Active Members */}
             <div className="bg-white rounded-lg border border-slate-200 mb-8 p-6">
                 <h3 className="text-lg font-medium text-slate-900 mb-4">Active Members</h3>
                 <div className="overflow-x-auto">
@@ -105,24 +119,33 @@ export default function TeamSettingsPage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-slate-200">
-                            {/* In a real app, this would iterate over company users */}
-                            <tr>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                                    Current User
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                    {/* Would show actual email */}
-                                    -
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                    Owner
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                                        Active
-                                    </span>
-                                </td>
-                            </tr>
+                            {members.map((member) => (
+                                <tr key={member.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                                        <div className="flex items-center gap-3">
+                                            {member.user.avatarUrl ? (
+                                                <img src={member.user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
+                                                    {member.user.firstName[0]}
+                                                </div>
+                                            )}
+                                            {member.user.firstName} {member.user.lastName}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                        {member.user.email}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                        {member.role || 'Member'}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
