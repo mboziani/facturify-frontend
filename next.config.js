@@ -15,7 +15,7 @@ const nextConfig = {
         ],
     },
     // basePath only for GitHub Pages production deployment
-    ...(isProduction && {
+    ...(process.env.GITHUB_ACTIONS && {
         basePath: '/facturify-frontend',
         assetPrefix: '/facturify-frontend/',
     }),
