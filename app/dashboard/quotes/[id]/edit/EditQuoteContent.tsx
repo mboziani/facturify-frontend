@@ -101,14 +101,7 @@ export default function EditQuoteContent() {
         }
     }, [quoteId, reset]);
 
-    useEffect(() => {
-        if (currentCompany && quoteId) {
-            loadClients();
-            loadQuote();
-        }
-    }, [currentCompany, quoteId, loadQuote]);
-
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await clientApi.getClients({ companyId: currentCompany.id });
@@ -116,7 +109,14 @@ export default function EditQuoteContent() {
         } catch (err) {
             console.error('Failed to load clients:', err);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany && quoteId) {
+            loadClients();
+            loadQuote();
+        }
+    }, [currentCompany, quoteId, loadQuote, loadClients]);
 
     const calculateTotals = () => {
         const subtotal = watchItems.reduce((sum, item) => {

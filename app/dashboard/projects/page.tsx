@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useCompany } from '@/contexts/CompanyContext';
 import { projectApi } from '@/lib/api/projectApi';
@@ -15,13 +15,7 @@ export default function ProjectsPage() {
     const [filterStatus, setFilterStatus] = useState<string>('ALL');
     const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadProjects();
-        }
-    }, [currentCompany]);
-
-    const loadProjects = async () => {
+    const loadProjects = useCallback(async () => {
         if (!currentCompany) return;
         setIsLoading(true);
         try {
@@ -32,7 +26,13 @@ export default function ProjectsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) {
+            loadProjects();
+        }
+    }, [currentCompany, loadProjects]);
 
     // Client-side filtering
     const filteredProjects = (Array.isArray(projects) ? projects : []).filter(p => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { teamInvitationsApi } from '@/lib/api/teamInvitationsApi';
 import toast from 'react-hot-toast';
@@ -12,13 +12,7 @@ export default function AcceptInvitationContent() {
     const [isProcessing, setIsProcessing] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (token) {
-            acceptInvitation();
-        }
-    }, [token]);
-
-    const acceptInvitation = async () => {
+    const acceptInvitation = useCallback(async () => {
         try {
             await teamInvitationsApi.acceptInvitation(token);
             toast.success('Invitation accepted! Welcome to the team!');
@@ -27,7 +21,13 @@ export default function AcceptInvitationContent() {
             setError(error.response?.data?.message || 'Failed to accept invitation');
             setIsProcessing(false);
         }
-    };
+    }, [token, router]);
+
+    useEffect(() => {
+        if (token) {
+            acceptInvitation();
+        }
+    }, [token, acceptInvitation]);
 
     if (isProcessing) {
         return (

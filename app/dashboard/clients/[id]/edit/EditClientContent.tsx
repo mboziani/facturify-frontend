@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -48,11 +48,7 @@ export default function EditClientContent() {
         resolver: zodResolver(clientSchema),
     });
 
-    useEffect(() => {
-        loadClient();
-    }, [clientId]);
-
-    const loadClient = async () => {
+    const loadClient = useCallback(async () => {
         try {
             setIsLoading(true);
             const data = await clientApi.getClient(clientId);
@@ -79,7 +75,11 @@ export default function EditClientContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [clientId, reset]);
+
+    useEffect(() => {
+        loadClient();
+    }, [loadClient]);
 
     const onSubmit = async (data: ClientFormData) => {
         try {

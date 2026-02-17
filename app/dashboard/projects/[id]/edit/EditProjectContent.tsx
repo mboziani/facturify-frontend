@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -41,20 +41,13 @@ export default function EditProjectContent({ id }: { id: string }) {
         resolver: zodResolver(projectSchema),
     });
 
-    useEffect(() => {
-        if (currentCompany && id) {
-            loadData();
-        }
-    }, [currentCompany, id]);
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         setIsLoading(true);
         try {
             const [clientsData, projectData] = await Promise.all([
                 clientApi.getClients({ companyId: currentCompany!.id }),
                 projectApi.getProject(id)
             ]);
-
             setClients(clientsData);
 
             // Format dates for input type="date"
@@ -79,7 +72,13 @@ export default function EditProjectContent({ id }: { id: string }) {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany, id, reset]);
+
+    useEffect(() => {
+        if (currentCompany && id) {
+            loadData();
+        }
+    }, [currentCompany, id, loadData]);
 
     const onSubmit = async (data: ProjectFormData) => {
         if (!currentCompany) return;

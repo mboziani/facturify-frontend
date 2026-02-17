@@ -3,7 +3,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
+    // swcMinify: true, // Enabled by default in >13.5
     output: 'export',
     images: {
         unoptimized: true,
@@ -21,12 +21,12 @@ const nextConfig = {
     }),
 };
 
-const withPWA = require('next-pwa')({
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
-});
+// const withPWA = require('next-pwa')({
+//     dest: 'public',
+//     register: true,
+//     skipWaiting: true,
+//     disable: process.env.NODE_ENV === 'development',
+// });
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig; // withPWA(nextConfig);
 

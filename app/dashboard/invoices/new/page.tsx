@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -69,13 +69,7 @@ export default function NewInvoicePage() {
     const allFormValues = watch(); // Watch all values for preview
     const selectedClient = clients.find(c => c.id === allFormValues.clientId);
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadClients();
-        }
-    }, [currentCompany]);
-
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await clientApi.getClients({ companyId: currentCompany.id });
@@ -83,7 +77,13 @@ export default function NewInvoicePage() {
         } catch (err) {
             console.error('Failed to load clients:', err);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) {
+            loadClients();
+        }
+    }, [currentCompany, loadClients]);
 
     const calculateTotals = () => {
         const subtotal = watchItems.reduce((sum, item) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { invoiceApi } from '@/lib/api/invoiceApi';
@@ -18,11 +18,7 @@ export default function InvoiceDetailContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadInvoice();
-    }, [invoiceId]);
-
-    const loadInvoice = async () => {
+    const loadInvoice = useCallback(async () => {
         try {
             setIsLoading(true);
             const data = await invoiceApi.getInvoice(invoiceId);
@@ -32,7 +28,11 @@ export default function InvoiceDetailContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [invoiceId]);
+
+    useEffect(() => {
+        loadInvoice();
+    }, [loadInvoice]);
 
     const handleDownloadPDF = () => {
         if (invoice) {

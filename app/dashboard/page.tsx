@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCompany } from '@/contexts/CompanyContext';
@@ -41,13 +41,7 @@ export default function DashboardPage() {
         }
     }, [user]);
 
-    useEffect(() => {
-        if (currentCompany?.id) {
-            loadDashboardData();
-        }
-    }, [currentCompany?.id]);
-
-    const loadDashboardData = async () => {
+    const loadDashboardData = useCallback(async () => {
         if (!currentCompany?.id) return;
 
         try {
@@ -68,7 +62,11 @@ export default function DashboardPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        loadDashboardData();
+    }, [loadDashboardData]);
 
     const getGreeting = () => {
         const hour = new Date().getHours();

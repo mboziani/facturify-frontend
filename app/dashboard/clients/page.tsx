@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCompany } from '@/contexts/CompanyContext';
@@ -15,13 +15,7 @@ export default function ClientsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadClients();
-        }
-    }, [currentCompany, searchQuery]);
-
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
 
         try {
@@ -36,7 +30,11 @@ export default function ClientsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany, searchQuery]);
+
+    useEffect(() => {
+        loadClients();
+    }, [loadClients]);
 
     const handleDelete = async (clientId: string) => {
         if (!confirm('Are you sure you want to delete this client?')) return;

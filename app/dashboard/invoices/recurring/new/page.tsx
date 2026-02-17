@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCompany } from '@/contexts/CompanyContext';
 import { recurringInvoiceApi, RecurringFrequency, CreateRecurringInvoiceData } from '@/lib/api/recurringInvoiceApi';
@@ -26,14 +26,7 @@ export default function NewRecurringInvoicePage() {
         isActive: true,
     });
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadClients();
-            setFormData(prev => ({ ...prev, companyId: currentCompany.id }));
-        }
-    }, [currentCompany]);
-
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await clientApi.getClients({ companyId: currentCompany.id });
@@ -41,7 +34,14 @@ export default function NewRecurringInvoicePage() {
         } catch (error) {
             console.error('Failed to load clients:', error);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) {
+            loadClients();
+            setFormData(prev => ({ ...prev, companyId: currentCompany.id }));
+        }
+    }, [currentCompany, loadClients]);
 
     const addItem = () => {
         setFormData({

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { projectApi } from '@/lib/api/projectApi';
 import { timeApi } from '@/lib/api/timeApi';
@@ -24,6 +24,16 @@ export default function TimeTracker() {
     const [selectedProjectId, setSelectedProjectId] = useState('');
     const [description, setDescription] = useState('');
 
+    const loadProjects = useCallback(async () => {
+        if (!currentCompany) return;
+        try {
+            const data = await projectApi.getProjects(currentCompany.id, { status: 'IN_PROGRESS' });
+            setProjects(Array.isArray(data) ? data : []);
+        } catch (err) {
+            console.error('Failed to load projects', err);
+        }
+    }, [currentCompany]);
+
     useEffect(() => {
         if (currentCompany) {
             loadProjects();
@@ -38,7 +48,7 @@ export default function TimeTracker() {
                 setElapsedTime(elapsed);
             }
         }
-    }, [currentCompany]);
+    }, [currentCompany, loadProjects]);
 
     useEffect(() => {
         if (activeEntry) {
@@ -53,16 +63,6 @@ export default function TimeTracker() {
             if (timerRef.current) clearInterval(timerRef.current);
         };
     }, [activeEntry]);
-
-    const loadProjects = async () => {
-        if (!currentCompany) return;
-        try {
-            const data = await projectApi.getProjects(currentCompany.id, { status: 'IN_PROGRESS' });
-            setProjects(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error('Failed to load projects', err);
-        }
-    };
 
     const startTimer = () => {
         if (!selectedProjectId) {

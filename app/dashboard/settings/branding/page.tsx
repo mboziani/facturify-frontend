@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function BrandingSettingsPage() {
     const { currentCompany, updateCompany, isLoading } = useCompany();
@@ -183,10 +184,12 @@ export default function BrandingSettingsPage() {
                             style={{ cursor: 'pointer' }}
                         >
                             {logoPreview ? (
-                                <img
+                                <Image
                                     src={logoPreview}
                                     alt="Company logo"
-                                    className="w-full h-full object-contain"
+                                    className="object-contain"
+                                    fill
+                                    unoptimized
                                 />
                             ) : (
                                 <div className="text-center p-4">
@@ -288,7 +291,14 @@ export default function BrandingSettingsPage() {
                     <div className="border border-slate-200 rounded-xl p-6 bg-white">
                         <div className="flex items-center gap-4 mb-6">
                             {logoPreview ? (
-                                <img src={logoPreview} alt="Logo" className="w-12 h-12 object-contain" />
+                                <Image
+                                    src={logoPreview}
+                                    alt="Logo"
+                                    width={48}
+                                    height={48}
+                                    className="object-contain"
+                                    unoptimized
+                                />
                             ) : (
                                 <div
                                     className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-lg"

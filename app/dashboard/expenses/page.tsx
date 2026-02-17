@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useCompany } from '@/contexts/CompanyContext';
 import { expenseApi, Expense, ExpenseCategory } from '@/lib/api/expenseApi';
@@ -16,11 +16,25 @@ export default function ExpensesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
+    const loadExpenses = useCallback(async () => {
+        if (!currentCompany) return;
+        setIsLoading(true);
+        try {
+            const data = await expenseApi.getExpenses(currentCompany.id);
+            setExpenses(data);
+        } catch (error) {
+            console.error('Failed to load expenses:', error);
+            toast.error('Failed to load expenses');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [currentCompany]);
+
     useEffect(() => {
         if (currentCompany && !isLocked) {
             loadExpenses();
         }
-    }, [currentCompany, isLocked]);
+    }, [currentCompany, isLocked, loadExpenses]);
 
     if (isLocked) {
         return (
@@ -43,20 +57,6 @@ export default function ExpensesPage() {
             </div>
         );
     }
-
-    const loadExpenses = async () => {
-        if (!currentCompany) return;
-        setIsLoading(true);
-        try {
-            const data = await expenseApi.getExpenses(currentCompany.id);
-            setExpenses(data);
-        } catch (error) {
-            console.error('Failed to load expenses:', error);
-            toast.error('Failed to load expenses');
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this expense?')) return;

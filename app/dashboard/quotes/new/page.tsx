@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -66,13 +66,7 @@ export default function NewQuotePage() {
     const watchTaxRate = watch('taxRate');
     const watchDiscount = watch('discount');
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadClients();
-        }
-    }, [currentCompany]);
-
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await clientApi.getClients({ companyId: currentCompany.id });
@@ -80,7 +74,13 @@ export default function NewQuotePage() {
         } catch (err) {
             console.error('Failed to load clients:', err);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) {
+            loadClients();
+        }
+    }, [currentCompany, loadClients]);
 
     const calculateTotals = () => {
         const subtotal = watchItems.reduce((sum, item) => {

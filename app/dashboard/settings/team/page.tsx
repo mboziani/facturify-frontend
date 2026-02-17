@@ -1,6 +1,7 @@
 'use client';
+import Image from 'next/image';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { teamInvitationsApi, TeamInvitation } from '@/lib/api/teamInvitationsApi';
 import { companyApi } from '@/lib/api/company';
@@ -16,14 +17,7 @@ export default function TeamSettingsPage() {
     const [inviteRole, setInviteRole] = useState<'MEMBER' | 'ADMIN'>('MEMBER');
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadInvitations();
-            loadMembers();
-        }
-    }, [currentCompany]);
-
-    const loadInvitations = async () => {
+    const loadInvitations = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await teamInvitationsApi.getInvitations(currentCompany.id);
@@ -31,9 +25,9 @@ export default function TeamSettingsPage() {
         } catch (error) {
             console.error('Failed to load invitations:', error);
         }
-    };
+    }, [currentCompany]);
 
-    const loadMembers = async () => {
+    const loadMembers = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await companyApi.getMembers(currentCompany.id);
@@ -41,7 +35,14 @@ export default function TeamSettingsPage() {
         } catch (error) {
             console.error('Failed to load members:', error);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) {
+            loadInvitations();
+            loadMembers();
+        }
+    }, [currentCompany, loadInvitations, loadMembers]);
 
     const handleSendInvite = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,7 +125,7 @@ export default function TeamSettingsPage() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                         <div className="flex items-center gap-3">
                                             {member.user.avatarUrl ? (
-                                                <img src={member.user.avatarUrl} alt="" className="w-8 h-8 rounded-full" />
+                                                <Image src={member.user.avatarUrl} alt="" width={32} height={32} className="w-8 h-8 rounded-full" />
                                             ) : (
                                                 <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
                                                     {member.user.firstName[0]}

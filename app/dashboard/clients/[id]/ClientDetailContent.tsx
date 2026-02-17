@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { clientApi } from '@/lib/api/clientApi';
@@ -15,11 +15,7 @@ export default function ClientDetailContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadClient();
-    }, [clientId]);
-
-    const loadClient = async () => {
+    const loadClient = useCallback(async () => {
         try {
             setIsLoading(true);
             const data = await clientApi.getClient(clientId);
@@ -29,7 +25,11 @@ export default function ClientDetailContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [clientId]);
+
+    useEffect(() => {
+        loadClient();
+    }, [loadClient]);
 
     const handleDelete = async () => {
         if (!confirm('Are you sure you want to delete this client? This action cannot be undone.')) {

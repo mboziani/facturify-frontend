@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCompany } from '@/contexts/CompanyContext';
@@ -16,13 +16,7 @@ export default function InvoicesPage() {
     const [statusFilter, setStatusFilter] = useState<InvoiceStatus | 'ALL'>('ALL');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (currentCompany) {
-            loadInvoices();
-        }
-    }, [currentCompany, statusFilter]);
-
-    const loadInvoices = async () => {
+    const loadInvoices = useCallback(async () => {
         if (!currentCompany) return;
 
         try {
@@ -37,7 +31,11 @@ export default function InvoicesPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany, statusFilter]);
+
+    useEffect(() => {
+        loadInvoices();
+    }, [loadInvoices]);
 
     if (!currentCompany) {
         return (

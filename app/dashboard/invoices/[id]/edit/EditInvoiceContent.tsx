@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -52,12 +52,7 @@ export default function EditInvoiceContent() {
     const watchTaxRate = watch('taxRate');
     const watchDiscount = watch('discount');
 
-    useEffect(() => {
-        loadInvoice();
-        if (currentCompany) loadClients();
-    }, [invoiceId, currentCompany]);
-
-    const loadInvoice = async () => {
+    const loadInvoice = useCallback(async () => {
         try {
             setIsLoading(true);
             const data = await invoiceApi.getInvoice(invoiceId);
@@ -81,9 +76,9 @@ export default function EditInvoiceContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [invoiceId, reset]);
 
-    const loadClients = async () => {
+    const loadClients = useCallback(async () => {
         if (!currentCompany) return;
         try {
             const data = await clientApi.getClients({ companyId: currentCompany.id });
@@ -91,7 +86,12 @@ export default function EditInvoiceContent() {
         } catch (err) {
             console.error('Failed to load clients:', err);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        loadInvoice();
+        if (currentCompany) loadClients();
+    }, [loadInvoice, loadClients, currentCompany]);
 
     const calculateTotals = () => {
         const subtotal = watchItems?.reduce((sum, item) => sum + (item.quantity || 0) * (item.unitPrice || 0), 0) || 0;

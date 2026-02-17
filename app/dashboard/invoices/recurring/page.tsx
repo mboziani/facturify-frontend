@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCompany } from '@/contexts/CompanyContext';
@@ -13,11 +13,7 @@ export default function RecurringInvoicesPage() {
     const [templates, setTemplates] = useState<RecurringInvoice[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (currentCompany) loadTemplates();
-    }, [currentCompany]);
-
-    const loadTemplates = async () => {
+    const loadTemplates = useCallback(async () => {
         if (!currentCompany) return;
         setIsLoading(true);
         try {
@@ -29,7 +25,11 @@ export default function RecurringInvoicesPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany]);
+
+    useEffect(() => {
+        if (currentCompany) loadTemplates();
+    }, [currentCompany, loadTemplates]);
 
     const handleGenerate = async (id: string, name: string) => {
         if (!confirm(`Generate invoice from "${name}"?`)) return;
@@ -130,8 +130,8 @@ export default function RecurringInvoicesPage() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${template.isActive
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-gray-100 text-gray-800'
                                             }`}>
                                             {template.isActive ? 'Active' : 'Inactive'}
                                         </span>

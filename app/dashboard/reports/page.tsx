@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useCompany } from '@/contexts/CompanyContext';
 import { reportsApi, IncomeStatement, AgingReport, ProjectProfitability, TaxReport } from '@/lib/api/reportsApi';
 import { downloadCSV } from '@/lib/utils/csv';
@@ -31,12 +31,7 @@ export default function ReportsPage() {
     const [year, setYear] = useState(new Date().getFullYear());
     const [taxPeriod, setTaxPeriod] = useState<'quarterly' | 'annual'>('quarterly');
 
-    useEffect(() => {
-        if (!currentCompany) return;
-        loadData();
-    }, [currentCompany, activeTab, year, taxPeriod]);
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         if (!currentCompany) return;
         setIsLoading(true);
         try {
@@ -59,7 +54,12 @@ export default function ReportsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [currentCompany, activeTab, year, taxPeriod]);
+
+    useEffect(() => {
+        if (!currentCompany) return;
+        loadData();
+    }, [currentCompany, activeTab, year, taxPeriod, loadData]);
 
     const handleExport = async (type: 'clients' | 'invoices') => {
         if (!currentCompany) return;
